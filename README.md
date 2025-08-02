@@ -1,6 +1,6 @@
-# SHL Coding Assessment Problem Generation Prompt
+# JP'S SHL Coding Assessment Simulator
 
-Use this prompt to generate additional coding problems that match the SHL assessment style and format:
+This simulator, that was Gen AI generated, provides 20 typical SHL problems that you can try out my submitting your solutions, that are tested against baselined solutions. You can compare your solution against the baselined solution. You can also load additional problems, that would be generated using the prompt template below
 
 ---
 
