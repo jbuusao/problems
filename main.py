@@ -44,6 +44,14 @@ st.markdown("""
         color: #721c24;
         margin: 1rem 0;
     }
+    .info-box {
+        padding: 1rem;
+        border-radius: 0.5rem;
+        background-color: #d1ecf1;
+        border: 1px solid #bee5eb;
+        color: #0c5460;
+        margin: 1rem 0;
+    }
     .hint-box {
         padding: 1rem;
         border-radius: 0.5rem;
@@ -110,62 +118,100 @@ def load_problems():
     
     return all_problems
 
-def execute_user_code(user_code, test_cases):
-    """Execute user code safely and run test cases"""
-    results = []
-    
+def execute_user_code(code, test_cases):
+    """Execute user code with test cases and return results"""
     try:
-        # Create a namespace for execution
-        namespace = {}
+        # Create a local namespace for execution
+        local_namespace = {}
         
         # Execute the user's code
-        exec(user_code, namespace)
+        exec(code, local_namespace)
         
-        # Extract the function (assume it's the first function defined)
-        function_name = None
-        for name, obj in namespace.items():
-            if callable(obj) and not name.startswith('_'):
-                function_name = name
+        # Find the function name from the code (assumes single function definition)
+        func_name = None
+        for name, obj in local_namespace.items():
+            if callable(obj) and not name.startswith('__'):
+                func_name = name
                 break
         
-        if not function_name:
+        if not func_name:
             return False, "No function found in your code"
         
-        user_function = namespace[function_name]
+        user_function = local_namespace[func_name]
+        results = []
         
-        # Run test cases
-        passed = 0
-        total = len(test_cases)
-        
-        for i, test_case in enumerate(test_cases):
+        # Test each case
+        for i, case in enumerate(test_cases):
             try:
-                # Prepare input arguments
-                args = test_case['input']
-                expected = test_case['expected']
+                # Call function with test input
+                result = user_function(*case['input'])
+                expected = case['expected']
                 
-                # Call the function
-                if len(args) == 1:
-                    result = user_function(args[0])
-                else:
-                    result = user_function(*args)
-                
-                # Compare result
                 if result == expected:
-                    results.append(f"✅ Test case {i+1}: PASSED")
-                    passed += 1
+                    results.append(f"✅ Test {i+1}: PASSED")
                 else:
-                    results.append(f"❌ Test case {i+1}: FAILED - Expected {expected}, got {result}")
-                    
+                    results.append(f"❌ Test {i+1}: FAILED<br>Expected: {expected}<br>Got: {result}")
             except Exception as e:
-                results.append(f"❌ Test case {i+1}: ERROR - {str(e)}")
+                results.append(f"❌ Test {i+1}: ERROR - {str(e)}")
         
-        success = passed == total
-        summary = f"Passed {passed}/{total} test cases"
-        
-        return success, summary + "\n\n" + "\n".join(results)
+        # Check if all tests passed
+        all_passed = all("PASSED" in result for result in results)
+        return all_passed, "<br>".join(results)
         
     except Exception as e:
-        return False, f"Code execution error: {str(e)}\n\n{traceback.format_exc()}"
+        return False, f"Error executing code: {str(e)}"
+
+def test_user_code(code):
+    """Execute user code for testing and capture output"""
+    import io
+    import sys
+    from contextlib import redirect_stdout, redirect_stderr
+    
+    try:
+        # Create string buffers to capture output
+        stdout_buffer = io.StringIO()
+        stderr_buffer = io.StringIO()
+        
+        # Create a local namespace for execution
+        local_namespace = {}
+        
+        # Redirect stdout and stderr to capture print statements and errors
+        with redirect_stdout(stdout_buffer), redirect_stderr(stderr_buffer):
+            # Execute the user's code
+            exec(code, local_namespace)
+        
+        # Get the captured output
+        stdout_output = stdout_buffer.getvalue()
+        stderr_output = stderr_buffer.getvalue()
+        
+        # Find the function name from the code (assumes single function definition)
+        func_name = None
+        for name, obj in local_namespace.items():
+            if callable(obj) and not name.startswith('__'):
+                func_name = name
+                break
+        
+        # Prepare result message
+        result_parts = []
+        
+        if stdout_output:
+            result_parts.append(f"<strong>Output:</strong><br><pre>{stdout_output}</pre>")
+        
+        if stderr_output:
+            result_parts.append(f"<strong>Errors:</strong><br><pre style='color: red;'>{stderr_output}</pre>")
+        
+        if func_name:
+            result_parts.append(f"<strong>Function found:</strong> {func_name}()")
+        else:
+            result_parts.append("<strong>⚠️ Warning:</strong> No function found in your code")
+        
+        if not stdout_output and not stderr_output:
+            result_parts.append("<strong>Info:</strong> Code executed successfully (no output)")
+        
+        return True, "<br><br>".join(result_parts)
+        
+    except Exception as e:
+        return False, f"<strong>Execution Error:</strong><br><pre style='color: red;'>{str(e)}</pre>"
 
 def display_problem_stats(problem_id):
     """Display statistics for a problem"""
@@ -356,14 +402,31 @@ def main():
             key=f"code_editor_{problem['id']}"
         )
     
-    # Submit button and Show Solution button
-    col1, col2 = st.columns([1, 1])
+    # Action buttons
+    col1, col2, col3 = st.columns([1, 1, 1])
     
     with col1:
-        submit_clicked = st.button("🚀 Submit Solution", type="primary", use_container_width=True)
+        test_clicked = st.button("🔍 Test Solution", use_container_width=True)
     
     with col2:
+        submit_clicked = st.button("🚀 Submit Solution", type="primary", use_container_width=True)
+    
+    with col3:
         show_solution_clicked = st.button("👀 Show Solution", use_container_width=True)
+    
+    # Handle test button click
+    if test_clicked:
+        if user_code.strip():
+            with st.spinner("Testing your code..."):
+                success, result = test_user_code(user_code)
+                if success:
+                    st.markdown(f'<div class="info-box">🔍 <strong>Test Results:</strong><br>{result}</div>', 
+                               unsafe_allow_html=True)
+                else:
+                    st.markdown(f'<div class="error-box">❌ <strong>Test Failed:</strong><br>{result}</div>', 
+                               unsafe_allow_html=True)
+        else:
+            st.error("Please write some code before testing!")
     
     # Handle submit button click
     if submit_clicked:
