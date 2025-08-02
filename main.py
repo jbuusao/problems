@@ -161,7 +161,7 @@ def execute_user_code(code, test_cases):
     except Exception as e:
         return False, f"Error executing code: {str(e)}"
 
-def test_user_code(code):
+def test_user_code(code, test_cases=None):
     """Execute user code for testing and capture output"""
     import io
     import sys
@@ -180,7 +180,7 @@ def test_user_code(code):
             # Execute the user's code
             exec(code, local_namespace)
             
-            # Try to find and call the function with sample data to trigger any print statements
+            # Try to find and call the function with test case data
             func_name = None
             for name, obj in local_namespace.items():
                 if callable(obj) and not name.startswith('__'):
@@ -190,40 +190,46 @@ def test_user_code(code):
             if func_name:
                 user_function = local_namespace[func_name]
                 try:
-                    # Try calling with some common test patterns
-                    sample_calls = [
-                        # For functions that might take a list
-                        ([1, 2, 3],),
-                        ([],),
-                        # For functions that might take a string
-                        ("test",),
-                        ("",),
-                        # For functions that might take a number
-                        (5,),
-                        (0,),
-                        # For functions with no parameters
-                        (),
-                    ]
-                    
-                    called_successfully = False
-                    for sample_args in sample_calls:
-                        try:
-                            user_function(*sample_args)
-                            called_successfully = True
-                            break
-                        except (TypeError, IndexError, KeyError, ValueError):
-                            # These are expected - wrong argument types/counts
-                            continue
-                        except Exception as e:
-                            # Other exceptions might be from the user's code logic
-                            break
-                    
-                    if not called_successfully:
-                        # If we couldn't call it with simple args, try with no args
-                        try:
-                            user_function()
-                        except:
-                            pass
+                    # If we have test cases, use the first one; otherwise use sample data
+                    if test_cases and len(test_cases) > 0:
+                        # Use the first test case input
+                        first_test = test_cases[0]
+                        user_function(*first_test['input'])
+                    else:
+                        # Fall back to generic sample data
+                        sample_calls = [
+                            # For functions that might take a list
+                            ([1, 2, 3],),
+                            ([],),
+                            # For functions that might take a string
+                            ("test",),
+                            ("",),
+                            # For functions that might take a number
+                            (5,),
+                            (0,),
+                            # For functions with no parameters
+                            (),
+                        ]
+                        
+                        called_successfully = False
+                        for sample_args in sample_calls:
+                            try:
+                                user_function(*sample_args)
+                                called_successfully = True
+                                break
+                            except (TypeError, IndexError, KeyError, ValueError):
+                                # These are expected - wrong argument types/counts
+                                continue
+                            except Exception as e:
+                                # Other exceptions might be from the user's code logic
+                                break
+                        
+                        if not called_successfully:
+                            # If we couldn't call it with simple args, try with no args
+                            try:
+                                user_function()
+                            except:
+                                pass
                             
                 except Exception:
                     # If we can't call the function, that's okay
@@ -252,7 +258,10 @@ def test_user_code(code):
         if func_name:
             result_parts.append(f"<strong>🔧 Function Found:</strong> {func_name}()")
             if stdout_output:
-                result_parts.append("<strong>📝 Note:</strong> Function was automatically called with sample data to show output")
+                if test_cases and len(test_cases) > 0:
+                    result_parts.append(f"<strong>📝 Note:</strong> Function was called with first test case: {test_cases[0]['input']}")
+                else:
+                    result_parts.append("<strong>📝 Note:</strong> Function was automatically called with sample data to show output")
         else:
             if not stdout_output and not stderr_output:
                 result_parts.append("<strong>⚠️ Note:</strong> No function found and no output produced")
@@ -260,7 +269,7 @@ def test_user_code(code):
                 result_parts.append("<strong>⚠️ Note:</strong> No function definition found (only standalone code executed)")
         
         if not stdout_output and not stderr_output and func_name:
-            result_parts.append("<strong>ℹ️ Info:</strong> Function defined but produced no output when called with sample data")
+            result_parts.append("<strong>ℹ️ Info:</strong> Function defined but produced no output when called with test data")
         
         return True, "<br><br>".join(result_parts)
         
@@ -472,7 +481,7 @@ def main():
     if test_clicked:
         if user_code.strip():
             with st.spinner("Testing your code..."):
-                success, result = test_user_code(user_code)
+                success, result = test_user_code(user_code, problem['test_cases'])
                 if success:
                     st.markdown(f'<div class="info-box">🔍 <strong>Test Results:</strong><br>{result}</div>', 
                                unsafe_allow_html=True)
@@ -534,7 +543,7 @@ def main():
                    unsafe_allow_html=True)
         
         # Also show any print output from the reference solution
-        test_success, test_result = test_user_code(problem['solution'])
+        test_success, test_result = test_user_code(problem['solution'], problem['test_cases'])
         if test_success and "✅ Output Captured:" in test_result:
             st.markdown(f'<div class="info-box">🔍 <strong>Reference Solution Output:</strong><br>{test_result}</div>', 
                        unsafe_allow_html=True)
