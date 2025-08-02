@@ -327,12 +327,27 @@ def main():
     # Pre-fill with function signature
     default_code = problem['function_signature'] + "\n    # Your code here\n    pass"
     
-    user_code = st.text_area(
-        "Write your solution:",
-        value=default_code,
-        height=300,
-        key=f"code_editor_{problem['id']}"
-    )
+    if ACE_AVAILABLE:
+        user_code = st_ace(
+            value=default_code,
+            language='python',
+            theme='monokai',
+            key=f"ace_editor_{problem['id']}",
+            height=300,
+            auto_update=True,
+            font_size=14,
+            tab_size=4,
+            wrap=False,
+            annotations=None,
+            markers=None
+        )
+    else:
+        user_code = st.text_area(
+            "Write your solution:",
+            value=default_code,
+            height=300,
+            key=f"code_editor_{problem['id']}"
+        )
     
     # Submit button
     col1, col2, col3 = st.columns([1, 1, 2])
