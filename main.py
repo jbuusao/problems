@@ -179,6 +179,55 @@ def test_user_code(code):
         with redirect_stdout(stdout_buffer), redirect_stderr(stderr_buffer):
             # Execute the user's code
             exec(code, local_namespace)
+            
+            # Try to find and call the function with sample data to trigger any print statements
+            func_name = None
+            for name, obj in local_namespace.items():
+                if callable(obj) and not name.startswith('__'):
+                    func_name = name
+                    break
+            
+            if func_name:
+                user_function = local_namespace[func_name]
+                try:
+                    # Try calling with some common test patterns
+                    sample_calls = [
+                        # For functions that might take a list
+                        ([1, 2, 3],),
+                        ([],),
+                        # For functions that might take a string
+                        ("test",),
+                        ("",),
+                        # For functions that might take a number
+                        (5,),
+                        (0,),
+                        # For functions with no parameters
+                        (),
+                    ]
+                    
+                    called_successfully = False
+                    for sample_args in sample_calls:
+                        try:
+                            user_function(*sample_args)
+                            called_successfully = True
+                            break
+                        except (TypeError, IndexError, KeyError, ValueError):
+                            # These are expected - wrong argument types/counts
+                            continue
+                        except Exception as e:
+                            # Other exceptions might be from the user's code logic
+                            break
+                    
+                    if not called_successfully:
+                        # If we couldn't call it with simple args, try with no args
+                        try:
+                            user_function()
+                        except:
+                            pass
+                            
+                except Exception:
+                    # If we can't call the function, that's okay
+                    pass
         
         # Get the captured output
         stdout_output = stdout_buffer.getvalue()
@@ -195,23 +244,28 @@ def test_user_code(code):
         result_parts = []
         
         if stdout_output:
-            result_parts.append(f"<strong>Output:</strong><br><pre>{stdout_output}</pre>")
+            result_parts.append(f"<strong>✅ Output Captured:</strong><br><pre>{stdout_output}</pre>")
         
         if stderr_output:
-            result_parts.append(f"<strong>Errors:</strong><br><pre style='color: red;'>{stderr_output}</pre>")
+            result_parts.append(f"<strong>❌ Errors:</strong><br><pre style='color: red;'>{stderr_output}</pre>")
         
         if func_name:
-            result_parts.append(f"<strong>Function found:</strong> {func_name}()")
+            result_parts.append(f"<strong>🔧 Function Found:</strong> {func_name}()")
+            if stdout_output:
+                result_parts.append("<strong>📝 Note:</strong> Function was automatically called with sample data to show output")
         else:
-            result_parts.append("<strong>⚠️ Warning:</strong> No function found in your code")
+            if not stdout_output and not stderr_output:
+                result_parts.append("<strong>⚠️ Note:</strong> No function found and no output produced")
+            else:
+                result_parts.append("<strong>⚠️ Note:</strong> No function definition found (only standalone code executed)")
         
-        if not stdout_output and not stderr_output:
-            result_parts.append("<strong>Info:</strong> Code executed successfully (no output)")
+        if not stdout_output and not stderr_output and func_name:
+            result_parts.append("<strong>ℹ️ Info:</strong> Function defined but produced no output when called with sample data")
         
         return True, "<br><br>".join(result_parts)
         
     except Exception as e:
-        return False, f"<strong>Execution Error:</strong><br><pre style='color: red;'>{str(e)}</pre>"
+        return False, f"<strong>💥 Execution Error:</strong><br><pre style='color: red;'>{str(e)}</pre>"
 
 def display_problem_stats(problem_id):
     """Display statistics for a problem"""
@@ -474,10 +528,16 @@ def main():
                 disabled=True
             )
         
-        # Test the reference solution
+        # Test the reference solution to show it works
         success, result = execute_user_code(problem['solution'], problem['test_cases'])
         st.markdown(f'<div class="success-box">✅ <strong>Reference Solution Test Results:</strong><br>{result}</div>', 
                    unsafe_allow_html=True)
+        
+        # Also show any print output from the reference solution
+        test_success, test_result = test_user_code(problem['solution'])
+        if test_success and "✅ Output Captured:" in test_result:
+            st.markdown(f'<div class="info-box">🔍 <strong>Reference Solution Output:</strong><br>{test_result}</div>', 
+                       unsafe_allow_html=True)
     
     # Test cases preview
     with st.expander("👁️ View Test Cases"):
