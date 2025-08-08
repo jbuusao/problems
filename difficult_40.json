@@ -1,0 +1,823 @@
+{
+  "problems": [
+    {
+      "id": 1,
+      "title": "Find the Kth Largest Element in an Array",
+      "statement": "Write a function that takes a list of integers and an integer k,\nand returns the kth largest element in the list.\nFor example, given [3, 2, 1, 5, 6, 4] and k=2,\nthe function should return 5.",
+      "function_signature": "def kth_largest(numbers, k):",
+      "categories": ["Array/List manipulation", "Algorithm implementation"],
+      "python_constructs": ["list", "sort"],
+      "hints": [
+        "Sort the list in descending order.",
+        "Return the element at index k-1.",
+        "Consider edge cases where k is out of bounds."
+      ],
+      "solution": "def kth_largest(numbers, k):\n    if k > len(numbers) or k <= 0:\n        raise ValueError('Invalid value for k')\n    return sorted(numbers, reverse=True)[k-1]",
+      "test_cases": [
+        {"input": [[3, 2, 1, 5, 6, 4], 2], "expected": 5},
+        {"input": [[1, 2, 3, 4, 5], 1], "expected": 5},
+        {"input": [[10, 20, 30, 40], 3], "expected": 20}
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Check Balanced Parentheses",
+      "statement": "Write a function that checks if a given string containing parentheses\nis balanced.\nFor example, '()' and '(())' are balanced,\nbut '(()' and '())' are not.",
+      "function_signature": "def is_balanced_parentheses(s):",
+      "categories": ["String processing and validation", "Data structure operations"],
+      "python_constructs": ["stack", "for loop"],
+      "hints": [
+        "Use a stack to keep track of open parentheses.",
+        "Push '(' onto the stack and pop when ')' is encountered.",
+        "Ensure the stack is empty at the end."
+      ],
+      "solution": "def is_balanced_parentheses(s):\n    stack = []\n    for char in s:\n        if char == '(':\n            stack.append(char)\n        elif char == ')':\n            if not stack:\n                return False\n            stack.pop()\n    return not stack",
+      "test_cases": [
+        {"input": ["()"], "expected": true},
+        {"input": ["(()"], "expected": false},
+        {"input": ["(())"], "expected": true}
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Find All Anagrams in a String",
+      "statement": "Write a function that takes a string s and a string p,\nand returns all start indices of p's anagrams in s.\nFor example, given s='cbaebabacd' and p='abc',\nthe function should return [0, 6].",
+      "function_signature": "def find_anagrams(s, p):",
+      "categories": ["String processing and validation", "Algorithm implementation"],
+      "python_constructs": ["sliding window", "dictionary"],
+      "hints": [
+        "Use a sliding window approach to check substrings.",
+        "Maintain a frequency count of characters in p.",
+        "Compare the frequency count of the current window with p."
+      ],
+      "solution": "from collections import Counter\ndef find_anagrams(s, p):\n    p_count = Counter(p)\n    s_count = Counter(s[:len(p)])\n    result = []\n    for i in range(len(p), len(s)):\n        if s_count == p_count:\n            result.append(i - len(p))\n        s_count[s[i]] += 1\n        s_count[s[i - len(p)]] -= 1\n        if s_count[s[i - len(p)]] == 0:\n            del s_count[s[i - len(p)]]\n    if s_count == p_count:\n        result.append(len(s) - len(p))\n    return result",
+      "test_cases": [
+        {"input": ["cbaebabacd", "abc"], "expected": [0, 6]},
+        {"input": ["abab", "ab"], "expected": [0, 1, 2]},
+        {"input": ["abcdef", "xyz"], "expected": []}
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Find the Shortest Path in a Graph",
+      "statement": "Write a function that takes a graph represented as an adjacency list and two nodes,\nand returns the shortest path between them using BFS.\nFor example, given the graph {0: [1, 2], 1: [2], 2: [3], 3: []} and nodes 0 and 3,\nthe function should return [0, 2, 3].",
+      "function_signature": "def shortest_path(graph, start, end):",
+      "categories": ["Algorithm implementation", "Data structure operations"],
+      "python_constructs": ["queue", "BFS"],
+      "hints": [
+        "Use a queue to explore nodes level by level.",
+        "Keep track of visited nodes to avoid cycles.",
+        "Store the path taken to reach each node."
+      ],
+      "solution": "from collections import deque\ndef shortest_path(graph, start, end):\n    queue = deque([(start, [start])])\n    visited = set()\n    while queue:\n        node, path = queue.popleft()\n        if node == end:\n            return path\n        visited.add(node)\n        for neighbor in graph[node]:\n            if neighbor not in visited:\n                queue.append((neighbor, path + [neighbor]))\n    return []",
+      "test_cases": [
+        {"input": [{"0": ["1", "2"], "1": ["2"], "2": ["3"], "3": []}, "0", "3"], "expected": ["0", "2", "3"]},
+        {"input": [{"0": ["1"], "1": ["2"], "2": ["3"], "3": []}, "0", "3"], "expected": ["0", "1", "2", "3"]},
+        {"input": [{"0": ["1"], "1": ["0"], "2": ["3"], "3": ["2"]}, "0", "3"], "expected": []}
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Merge Intervals",
+      "statement": "Write a function that takes a list of intervals and merges overlapping intervals.\nFor example, given [[1, 3], [2, 6], [8, 10], [15, 18]],\nthe function should return [[1, 6], [8, 10], [15, 18]].",
+      "function_signature": "def merge_intervals(intervals):",
+      "categories": ["Array/List manipulation", "Algorithm implementation"],
+      "python_constructs": ["list", "sort"],
+      "hints": [
+        "Sort the intervals by their start times.",
+        "Iterate through the intervals and merge overlapping ones.",
+        "Use a list to store the merged intervals."
+      ],
+      "solution": "def merge_intervals(intervals):\n    intervals.sort(key=lambda x: x[0])\n    merged = []\n    for interval in intervals:\n        if not merged or merged[-1][1] < interval[0]:\n            merged.append(interval)\n        else:\n            merged[-1][1] = max(merged[-1][1], interval[1])\n    return merged",
+      "test_cases": [
+        {"input": [[[1, 3], [2, 6], [8, 10], [15, 18]]], "expected": [[1, 6], [8, 10], [15, 18]]},
+        {"input": [[[1, 4], [4, 5]]], "expected": [[1, 5]]},
+        {"input": [[[1, 2], [3, 4]]], "expected": [[1, 2], [3, 4]]}
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Find the Median of Two Sorted Arrays",
+      "statement": "Write a function that takes two sorted arrays and returns their median.\nFor example, given [1, 3] and [2], the function should return 2.0.",
+      "function_signature": "def find_median_sorted_arrays(nums1, nums2):",
+      "categories": ["Array/List manipulation", "Algorithm implementation"],
+      "python_constructs": ["list", "binary search"],
+      "hints": [
+        "Combine the two arrays and sort them.",
+        "Find the middle element(s) of the combined array.",
+        "Handle both even and odd lengths."
+      ],
+      "solution": "def find_median_sorted_arrays(nums1, nums2):\n    nums = sorted(nums1 + nums2)\n    n = len(nums)\n    if n % 2 == 0:\n        return (nums[n//2 - 1] + nums[n//2]) / 2\n    return nums[n//2]",
+      "test_cases": [
+        {"input": [[1, 3], [2]], "expected": 2.0},
+        {"input": [[1, 2], [3, 4]], "expected": 2.5},
+        {"input": [[0, 0], [0, 0]], "expected": 0.0}
+      ]
+    },
+    {
+      "id": 7,
+      "title": "Word Ladder Transformation",
+      "statement": "Write a function that finds the shortest transformation sequence from a start word to an end word,\ngiven a dictionary of words.\nFor example, given start='hit', end='cog', and word_list=['hot', 'dot', 'dog', 'lot', 'log', 'cog'],\nthe function should return ['hit', 'hot', 'dot', 'dog', 'cog'].",
+      "function_signature": "def word_ladder(start, end, word_list):",
+      "categories": ["Algorithm implementation", "Data structure operations"],
+      "python_constructs": ["queue", "BFS"],
+      "hints": [
+        "Use BFS to explore transformations.",
+        "Generate all possible transformations for each word.",
+        "Keep track of visited words to avoid cycles."
+      ],
+      "solution": "from collections import deque\ndef word_ladder(start, end, word_list):\n    word_set = set(word_list)\n    queue = deque([(start, [start])])\n    while queue:\n        word, path = queue.popleft()\n        if word == end:\n            return path\n        for i in range(len(word)):\n            for char in 'abcdefghijklmnopqrstuvwxyz':\n                next_word = word[:i] + char + word[i+1:]\n                if next_word in word_set:\n                    word_set.remove(next_word)\n                    queue.append((next_word, path + [next_word]))\n    return []",
+      "test_cases": [
+        {"input": ["hit", "cog", ["hot", "dot", "dog", "lot", "log", "cog"]], "expected": ["hit", "hot", "dot", "dog", "cog"]},
+        {"input": ["hit", "cog", ["hot", "dot", "dog", "lot", "log"]], "expected": []},
+        {"input": ["a", "c", ["a", "b", "c"]], "expected": ["a", "b", "c"]}
+      ]
+    },
+    {
+      "id": 8,
+      "title": "Longest Substring Without Repeating Characters",
+      "statement": "Write a function that finds the length of the longest substring without repeating characters.\nFor example, given 'abcabcbb', the function should return 3,\nas the longest substring without repeating characters is 'abc'.",
+      "function_signature": "def length_of_longest_substring(s):",
+      "categories": ["String processing and validation", "Algorithm implementation"],
+      "python_constructs": ["sliding window", "set"],
+      "hints": [
+        "Use a sliding window approach with a set to track characters.",
+        "Expand the window by moving the right pointer.",
+        "Contract the window by moving the left pointer when a repeat is found."
+      ],
+      "solution": "def length_of_longest_substring(s):\n    char_set = set()\n    left = 0\n    max_length = 0\n    for right in range(len(s)):\n        while s[right] in char_set:\n            char_set.remove(s[left])\n            left += 1\n        char_set.add(s[right])\n        max_length = max(max_length, right - left + 1)\n    return max_length",
+      "test_cases": [
+        {"input": ["abcabcbb"], "expected": 3},
+        {"input": ["bbbbb"], "expected": 1},
+        {"input": ["pwwkew"], "expected": 3}
+      ]
+    },
+    {
+      "id": 9,
+      "title": "Rotate Image",
+      "statement": "Write a function that rotates an NxN matrix representing an image by 90 degrees clockwise.\nFor example, given [[1, 2, 3], [4, 5, 6], [7, 8, 9]],\nthe function should return [[7, 4, 1], [8, 5, 2], [9, 6, 3]].",
+      "function_signature": "def rotate_image(matrix):",
+      "categories": ["Array/List manipulation", "Matrix operations"],
+      "python_constructs": ["list", "zip"],
+      "hints": [
+        "Transpose the matrix by swapping rows and columns.",
+        "Reverse the order of elements in each row."
+      ],
+      "solution": "def rotate_image(matrix):\n    return [list(row) for row in zip(*matrix[::-1])]",
+      "test_cases": [
+        {"input": [[[1, 2, 3], [4, 5, 6], [7, 8, 9]]], "expected": [[7, 4, 1], [8, 5, 2], [9, 6, 3]]},
+        {"input": [[[1, 2], [3, 4]]], "expected": [[3, 1], [4, 2]]},
+        {"input": [[[1]]], "expected": [[1]]}
+      ]
+    },
+    {
+      "id": 10,
+      "title": "Group Anagrams",
+      "statement": "Write a function that groups anagrams from a list of strings.\nFor example, given ['eat', 'tea', 'tan', 'ate', 'nat', 'bat'],\nthe function should return [['eat', 'tea', 'ate'], ['tan', 'nat'], ['bat']].",
+      "function_signature": "def group_anagrams(words):",
+      "categories": ["String processing and validation", "Algorithm implementation"],
+      "python_constructs": ["dictionary", "for loop"],
+      "hints": [
+        "Use a dictionary to group words by their sorted character tuple.",
+        "Iterate through each word and sort its characters.",
+        "Append the word to the corresponding group in the dictionary."
+      ],
+      "solution": "from collections import defaultdict\ndef group_anagrams(words):\n    anagrams = defaultdict(list)\n    for word in words:\n        key = tuple(sorted(word))\n        anagrams[key].append(word)\n    return list(anagrams.values())",
+      "test_cases": [
+        {"input": [["eat", "tea", "tan", "ate", "nat", "bat"]], "expected": [["eat", "tea", "ate"], ["tan", "nat"], ["bat"]]},
+        {"input": [["listen", "silent", "enlist"]], "expected": [["listen", "silent", "enlist"]]},
+        {"input": [["a"]], "expected": [["a"]]}
+      ]
+    },
+    {
+      "id": 11,
+      "title": "Valid Sudoku",
+      "statement": "Write a function that determines if a given 9x9 Sudoku board is valid.\nOnly the filled cells need to be validated according to the Sudoku rules.\nThe function should return true if the Sudoku is valid, and false otherwise.",
+      "function_signature": "def is_valid_sudoku(board):",
+      "categories": ["Algorithm implementation", "Data structure operations"],
+      "python_constructs": ["set", "for loop"],
+      "hints": [
+        "Use sets to track the numbers seen in each row, column, and 3x3 sub-box.",
+        "Iterate through each cell in the Sudoku board.",
+        "Skip empty cells and check for duplicates in the sets."
+      ],
+      "solution": "def is_valid_sudoku(board):\n    def is_valid_block(block):\n        nums = [num for num in block if num != '.']\n        return len(nums) == len(set(nums))\n    for i in range(9):\n        if not is_valid_block(board[i]) or not is_valid_block([board[j][i] for j in range(9)]):\n            return False\n    for i in (0, 3, 6):\n        for j in (0, 3, 6):\n            if not is_valid_block([board[x][y] for x in range(i, i + 3) for y in range(j, j + 3)]):\n                return False\n    return True",
+      "test_cases": [
+        {"input": [["5", "3", ".", ".", "7", ".", ".", ".", "."], [".", "6", ".", "1", "9", "5", ".", ".", "."], [".", "9", "8", ".", ".", ".", ".", "6", "."], ["8", ".", ".", ".", "6", ".", ".", ".", "3"], ["4", ".", ".", "8", ".", "3", ".", ".", "1"], ["7", ".", ".", ".", "2", ".", ".", ".", "6"], [".", "6", ".", ".", ".", ".", "2", "8", "."], [".", ".", ".", "4", "1", "9", ".", ".", "5"], [".", ".", ".", ".", "8", ".", ".", "7", "9"]], "expected": true},
+        {"input": [["8", "3", ".", ".", "7", ".", ".", ".", "."], [".", "6", ".", "1", "9", "5", ".", ".", "."], [".", "9", "8", ".", ".", ".", ".", "6", "."], ["8", ".", ".", ".", "6", ".", ".", ".", "3"], ["4", ".", ".", "8", ".", "3", ".", ".", "1"], ["7", ".", ".", ".", "2", ".", ".", ".", "6"], [".", "6", ".", ".", ".", ".", "2", "8", "."], [".", ".", ".", "4", "1", "9", ".", ".", "5"], [".", ".", ".", ".", "8", ".", ".", "7", "9"]], "expected": false},
+        {"input": [[".", ".", ".", ".", ".", ".", ".", ".", "."], [".", ".", ".", ".", ".", ".", ".", ".", "."], [".", ".", ".", ".", ".", ".", ".", ".", "."], [".", ".", ".", ".", ".", ".", ".", ".", "."], [".", ".", ".", ".", ".", ".", ".", ".", "."], [".", ".", ".", ".", ".", ".", ".", ".", "."], [".", ".", ".", ".", ".", ".", ".", ".", "."], [".", ".", ".", ".", ".", ".", ".", ".", "."], [".", ".", ".", ".", ".", ".", ".", ".", "."]], "expected": true}
+      ]
+    },
+    {
+      "id": 12,
+      "title": "Lowest Common Ancestor in a Binary Tree",
+      "statement": "Write a function that finds the lowest common ancestor of two nodes in a binary tree.\nThe lowest common ancestor is the deepest node that is an ancestor to both nodes.\nGiven the binary tree below and nodes 5 and 1,\nthe function should return 3, as it is the lowest common ancestor of nodes 5 and 1.",
+      "function_signature": "def lowest_common_ancestor(root, p, q):",
+      "categories": ["Tree traversal", "Binary tree operations"],
+      "python_constructs": ["DFS", "recursion"],
+      "hints": [
+        "Use DFS to traverse the tree and find the paths to the two nodes.",
+        "Compare the paths to find the last common node.",
+        "This node is the lowest common ancestor."
+      ],
+      "solution": "def lowest_common_ancestor(root, p, q):\n    path1, path2 = [], []\n    def dfs(node, path, target):\n        if not node or len(path) > len(target): return\n        path.append(node)\n        if node == target[-1]:\n            target[:] = path[:]\n        dfs(node.left, path, target)\n        dfs(node.right, path, target)\n        path.pop()\n    dfs(root, path1, [p])\n    dfs(root, path2, [q])\n    lca = None\n    for u, v in zip(path1, path2):\n        if u == v:\n            lca = u\n        else:\n            break\n    return lca",
+      "test_cases": [
+        {"input": [[3, 5, 1, 6, 2, 0, 8, null, null, 7, 4], 5, 1], "expected": 3},
+        {"input": [[3, 5, 1, 6, 2, 0, 8, null, null, 7, 4], 5, 4], "expected": 5},
+        {"input": [[1, 2, 3, null, null, 4, 5], 4, 5], "expected": 2}
+      ]
+    },
+    {
+      "id": 13,
+      "title": "Serialize and Deserialize Binary Tree",
+      "statement": "Write a function that serializes a binary tree into a string and a function that deserializes the string back into a binary tree.\nThe serialization format should be '[val,left_subtree,right_subtree]'.\nFor example, given the binary tree below,\nthe serialization should return '[1,[2,[4,null,null],[5,null,null]],[3,[6,null,null],[7,null,null]]]'",
+      "function_signature": "def serialize(root):\n    def recur(node):\n        if not node:\n            return 'null'\n        return f'{node.val},' + recur(node.left) + ',' + recur(node.right)\n    return '[{}]'.format(recur(root)[:-1])\n\ndef deserialize(data):\n    data = data[1:-1]  # remove brackets\n    if not data:\n        return None\n    vals = data.split(',')\n    def recur(index):\n        if vals[index] == 'null':\n            return None, index + 1\n        node = TreeNode(int(vals[index]))\n        node.left, index = recur(index + 1)\n        node.right, index = recur(index)\n        return node, index\n    root, _ = recur(0)\n    return root",
+      "categories": ["Tree traversal", "Binary tree operations"],
+      "python_constructs": ["recursion", "string manipulation"],
+      "hints": [
+        "Use pre-order traversal for serialization.",
+        "Use recursion to serialize each node and its subtrees.",
+        "Handle null nodes appropriately."
+      ],
+      "solution": "def serialize(root):\n    def recur(node):\n        if not node:\n            return 'null'\n        return f'{node.val},' + recur(node.left) + ',' + recur(node.right)\n    return '[{}]'.format(recur(root)[:-1])\n\ndef deserialize(data):\n    data = data[1:-1]  # remove brackets\n    if not data:\n        return None\n    vals = data.split(',')\n    def recur(index):\n        if vals[index] == 'null':\n            return None, index + 1\n        node = TreeNode(int(vals[index]))\n        node.left, index = recur(index + 1)\n        node.right, index = recur(index)\n        return node, index\n    root, _ = recur(0)\n    return root",
+      "test_cases": [
+        {"input": [[1, 2, 3, null, null, 4, 5]], "expected": "[1,[2,null,null],[3,[4,null,null],[5,null,null]]]"},
+        {"input": [[1]], "expected": "[1,null,null]"},
+        {"input": [null], "expected": "[]"}
+      ]
+    },
+    {
+      "id": 14,
+      "title": "Binary Tree Level Order Traversal",
+      "statement": "Write a function that performs a level order traversal of a binary tree and returns the values in a list of lists.\nEach sublist should represent one level of the tree.\nFor example, given the binary tree below,\nthe function should return '[[3], [9, 20], [15, 7]]'.",
+      "function_signature": "def level_order_traversal(root):",
+      "categories": ["Tree traversal", "Binary tree operations"],
+      "python_constructs": ["queue", "BFS"],
+      "hints": [
+        "Use a queue to explore nodes level by level.",
+        "Enqueue the root node and then its children.",
+        "Track the number of nodes at each level."
+      ],
+      "solution": "from collections import deque\ndef level_order_traversal(root):\n    if not root:\n        return []\n    result, queue = [], deque([root])\n    while queue:\n        level_size = len(queue)\n        level_nodes = []\n        for _ in range(level_size):\n            node = queue.popleft()\n            level_nodes.append(node.val)\n            if node.left:\n                queue.append(node.left)\n            if node.right:\n                queue.append(node.right)\n        result.append(level_nodes)\n    return result",
+      "test_cases": [
+        {"input": [[3, 9, 20, null, null, 15, 7]], "expected": [[3], [9, 20], [15, 7]]},
+        {"input": [[1, 2, 3, 4, 5, null, null]], "expected": [[1], [2, 3], [4, 5]]},
+        {"input": [null], "expected": []}
+      ]
+    },
+    {
+      "id": 15,
+      "title": "Binary Search",
+      "statement": "Write a function that performs binary search on a sorted array and returns the index of the target value.\nIf the target value is not present, return -1.\nFor example, given the sorted array [1, 2, 3, 4, 5] and target 3,\nthe function should return 2.",
+      "function_signature": "def binary_search(nums, target):",
+      "categories": ["Algorithm implementation", "Search algorithms"],
+      "python_constructs": ["while loop"],
+      "hints": [
+        "Initialize two pointers at the start and end of the array.",
+        "Calculate the middle index and compare the middle value to the target.",
+        "Narrow the search range based on the comparison."
+      ],
+      "solution": "def binary_search(nums, target):\n    left, right = 0, len(nums) - 1\n    while left <= right:\n        mid = left + (right - left) // 2\n        if nums[mid] == target:\n            return mid\n        elif nums[mid] < target:\n            left = mid + 1\n        else:\n            right = mid - 1\n    return -1",
+      "test_cases": [
+        {"input": [[1, 2, 3, 4, 5], 3], "expected": 2},
+        {"input": [[1, 2, 3, 4, 5], 1], "expected": 0},
+        {"input": [[1, 2, 3, 4, 5], 6], "expected": -1}
+      ]
+    },
+    {
+      "id": 16,
+      "title": "Climbing Stairs",
+      "statement": "Write a function that calculates the number of distinct ways to climb to the top of a staircase with n steps,\ngiven that you can climb 1 or 2 steps at a time.\nFor example, given n=4, the function should return 5,\nas there are five distinct ways to climb to the top: 1+1+1+1, 1+1+2, 1+2+1, 2+1+1, 2+2.",
+      "function_signature": "def climb_stairs(n):",
+      "categories": ["Dynamic programming", "Mathematical reasoning"],
+      "python_constructs": ["for loop", "if statement"],
+      "hints": [
+        "Use dynamic programming to build up the solution.",
+        "The number of ways to reach step n is the sum of the ways to reach steps n-1 and n-2.",
+        "Handle the base cases for 0, 1, and 2 steps."
+      ],
+      "solution": "def climb_stairs(n):\n    if n <= 2:\n        return n\n    a, b = 1, 2\n    for _ in range(3, n + 1):\n        a, b = b, a + b\n    return b",
+      "test_cases": [
+        {"input": [2], "expected": 2},
+        {"input": [3], "expected": 3},
+        {"input": [4], "expected": 5}
+      ]
+    },
+    {
+      "id": 17,
+      "title": "Coin Change",
+      "statement": "Write a function that calculates the minimum number of coins required to make change for a given amount of money,\ngiven a list of coin denominations.\nFor example, given the amount 11 and coin denominations [1, 2, 5],\nthe function should return 3, as the minimum number of coins is 3 (11 = 5 + 5 + 1).",
+      "function_signature": "def coin_change(amount, coins):",
+      "categories": ["Dynamic programming", "Greedy algorithms"],
+      "python_constructs": ["for loop", "if statement"],
+      "hints": [
+        "Use dynamic programming to build up the solution.",
+        "The minimum coins for an amount is the minimum of the coins for (amount - coin) + 1 for each coin.",
+        "Handle the base case for amount 0."
+      ],
+      "solution": "def coin_change(amount, coins):\n    dp = [float('inf')] * (amount + 1)\n    dp[0] = 0\n    for coin in coins:\n        for x in range(coin, amount + 1):\n            dp[x] = min(dp[x], dp[x - coin] + 1)\n    return dp[amount] if dp[amount] != float('inf') else -1",
+      "test_cases": [
+        {"input": [11, [1, 2, 5]], "expected": 3},
+        {"input": [7, [2, 3, 5]], "expected": 2},
+        {"input": [0, [1, 2, 5]], "expected": 0}
+      ]
+    },
+    {
+      "id": 18,
+      "title": "Longest Increasing Subsequence",
+      "statement": "Write a function that finds the length of the longest increasing subsequence in an array of integers.\nFor example, given [10, 9, 2, 5, 3, 7, 101, 18],\nthe function should return 4, as the longest increasing subsequence is [2, 3, 7, 101].",
+      "function_signature": "def length_of_LIS(nums):",
+      "categories": ["Dynamic programming", "Greedy algorithms"],
+      "python_constructs": ["for loop", "if statement"],
+      "hints": [
+        "Use dynamic programming to build up the solution.",
+        "The length of the LIS ending at an index is 1 plus the maximum length of the LISs ending at the previous indices that are less than the current number.",
+        "Optimize the solution to O(n log n) using a binary search."
+      ],
+      "solution": "def length_of_LIS(nums):\n    if not nums:\n        return 0\n    dp = [1] * len(nums)\n    for i in range(len(nums)):\n        for j in range(i):\n            if nums[i] > nums[j]:\n                dp[i] = max(dp[i], dp[j] + 1)\n    return max(dp)",
+      "test_cases": [
+        {"input": [[10, 9, 2, 5, 3, 7, 101, 18]], "expected": 4},
+        {"input": [[3, 2, 5, 6, 3, 7, 1, 4, 8]], "expected": 5},
+        {"input": [[1, 3, 6, 7, 9, 4, 10, 5, 6]], "expected": 6}
+      ]
+    },
+    {
+      "id": 19,
+      "title": "Maximum Subarray",
+      "statement": "Write a function that finds the contiguous subarray within an array (containing at least one number)\nwhich has the largest sum.\nFor example, given the array [-2,1,-3,4,-1,2,1,-5,4],\nthe function should return 6, as the maximum subarray is [4,-1,2,1].",
+      "function_signature": "def max_subarray(nums):",
+      "categories": ["Dynamic programming", "Greedy algorithms"],
+      "python_constructs": ["for loop", "if statement"],
+      "hints": [
+        "Use dynamic programming to build up the solution.",
+        "The maximum subarray ending at an index is the maximum of the current number and the maximum subarray ending at the previous index plus the current number.",
+        "Keep track of the global maximum subarray sum."
+      ],
+      "solution": "def max_subarray(nums):\n    max_ending_here = max_so_far = nums[0]\n    for x in nums[1:]:\n        max_ending_here = max(x, max_ending_here + x)\n        max_so_far = max(max_so_far, max_ending_here)\n    return max_so_far",
+      "test_cases": [
+        {"input": [[-2,1,-3,4,-1,2,1,-5,4]], "expected": 6},
+        {"input": [[1]], "expected": 1},
+        {"input": [[-1,-2,-3,-4]], "expected": -1}
+      ]
+    },
+    {
+      "id": 20,
+      "title": "Product of Array Except Self",
+      "statement": "Write a function that calculates the product of all elements in an array except for the element at the current index,\nwithout using division.\nFor example, given the array [1, 2, 3, 4],\nthe function should return [24, 12, 8, 6].",
+      "function_signature": "def product_except_self(nums):",
+      "categories": ["Array/List manipulation", "Algorithm implementation"],
+      "python_constructs": ["list", "for loop"],
+      "hints": [
+        "Use two lists to keep track of the products to the left and right of each index.",
+        "The product except self at an index is the product of the left product and the right product at that index.",
+        "Optimize the solution to O(n) time and O(1) space (excluding the output array)."
+      ],
+      "solution": "def product_except_self(nums):\n    length = len(nums)\n    answer = [1] * length\n    left_product = 1\n    for i in range(length):\n        answer[i] = left_product\n        left_product *= nums[i]\n    right_product = 1\n    for i in range(length - 1, -1, -1):\n        answer[i] *= right_product\n        right_product *= nums[i]\n    return answer",
+      "test_cases": [
+        {"input": [[1, 2, 3, 4]], "expected": [24, 12, 8, 6]},
+        {"input": [[4, 3, 2, 1]], "expected": [6, 8, 12, 24]},
+        {"input": [[1, 1, 1, 1]], "expected": [1, 1, 1, 1]}
+      ]
+    },
+    {
+      "id": 21,
+      "title": "Find Peak Element",
+      "statement": "Write a function that finds a peak element in an array.\nAn element is considered a peak if it is not smaller than its neighbors.\nFor example, given the array [1, 2, 3, 1],\nthe function should return 2, as it is a peak element.",
+      "function_signature": "def find_peak(nums):",
+      "categories": ["Algorithm implementation", "Array/List manipulation"],
+      "python_constructs": ["for loop", "if statement"],
+      "hints": [
+        "A peak element is greater than or equal to its neighbors.",
+        "Check the first and last elements separately.",
+        "Use a binary search approach to find a peak in O(log n) time."
+      ],
+      "solution": "def find_peak(nums):\n    if not nums:\n        return None\n    n = len(nums)\n    if n == 1 or nums[0] >= nums[1]:\n        return nums[0]\n    if nums[n - 1] >= nums[n - 2]:\n        return nums[n - 1]\n    left, right = 1, n - 2\n    while left <= right:\n        mid = left + (right - left) // 2\n        if nums[mid] >= nums[mid - 1] and nums[mid] >= nums[mid + 1]:\n            return nums[mid]\n        elif nums[mid] < nums[mid - 1]:\n            right = mid - 1\n        else:\n            left = mid + 1\n    return None",
+      "test_cases": [
+        {"input": [[1, 2, 3, 1]], "expected": 3},
+        {"input": [[1, 2, 1, 3, 5, 6, 4]], "expected": 6},
+        {"input": [[1]], "expected": 1}
+      ]
+    },
+    {
+      "id": 22,
+      "title": "Search in Rotated Sorted Array",
+      "statement": "Write a function that searches for a target value in a rotated sorted array and returns its index.\nIf the target value is not present, return -1.\nFor example, given the array [4, 5, 6, 7, 0, 1, 2] and target 0,\nthe function should return 4.",
+      "function_signature": "def search_rotated_sorted_array(nums, target):",
+      "categories": ["Algorithm implementation", "Search algorithms"],
+      "python_constructs": ["while loop", "if statement"],
+      "hints": [
+        "Use binary search to find the pivot point where the rotation occurs.",
+        "Determine which side of the pivot the target value is on.",
+        "Perform a regular binary search on the identified side."
+      ],
+      "solution": "def search_rotated_sorted_array(nums, target):\n    left, right = 0, len(nums) - 1\n    while left <= right:\n        mid = left + (right - left) // 2\n        if nums[mid] == target:\n            return mid\n        if nums[left] <= nums[mid]:\n            if nums[left] <= target < nums[mid]:\n                right = mid - 1\n            else:\n                left = mid + 1\n        else:\n            if nums[mid] < target <= nums[right]:\n                left = mid + 1\n            else:\n                right = mid - 1\n    return -1",
+      "test_cases": [
+        {"input": [[4, 5, 6, 7, 0, 1, 2], 0], "expected": 4},
+        {"input": [[4, 5, 6, 7, 0, 1, 2], 3], "expected": -1},
+        {"input": [[1], 0], "expected": -1}
+      ]
+    },
+    {
+      "id": 23,
+      "title": "Container With Most Water",
+      "statement": "Write a function that finds two lines, which together with the x-axis form a container,\nsuch that the container contains the most water.\nThe function should return the maximum area of water that can be contained.\nFor example, given the heights [1,8,6,2,5,4,8,3,7],\nthe function should return 49.",
+      "function_signature": "def max_area(height):",
+      "categories": ["Algorithm implementation", "Array/List manipulation"],
+      "python_constructs": ["two pointers", "for loop"],
+      "hints": [
+        "Use the two pointers approach, starting with one pointer at each end of the array.",
+        "Calculate the area formed between the two lines pointed by the pointers.",
+        "Move the pointer pointing to the shorter line towards the other pointer."
+      ],
+      "solution": "def max_area(height):\n    left, right = 0, len(height) - 1\n    max_area = 0\n    while left < right:\n        width = right - left\n        h = min(height[left], height[right])\n        max_area = max(max_area, width * h)\n        if height[left] < height[right]:\n            left += 1\n        else:\n            right -= 1\n    return max_area",
+      "test_cases": [
+        {"input": [[1,8,6,2,5,4,8,3,7]], "expected": 49},
+        {"input": [[1,1]], "expected": 1},
+        {"input": [[4,3,2,1,4]], "expected": 16}
+      ]
+    },
+    {
+      "id": 24,
+      "title": "Jump Game",
+      "statement": "Write a function that determines if you can jump to the last index of the array,\ngiven an array of non-negative integers where each element represents your maximum jump length at that position.\nFor example, given the array [2,3,1,1,4],\nthe function should return true, as you can jump 2 steps to the 3, and then 3 steps to the last index.",
+      "function_signature": "def can_jump(nums):",
+      "categories": ["Greedy algorithms", "Array/List manipulation"],
+      "python_constructs": ["for loop", "if statement"],
+      "hints": [
+        "Use a greedy approach to track the farthest reachable index.",
+        "Iterate through the array and update the farthest index at each step.",
+        "If the current index exceeds the farthest index, return false."
+      ],
+      "solution": "def can_jump(nums):\n    farthest = 0\n    for i in range(len(nums)):\n        if i > farthest:\n            return False\n        farthest = max(farthest, i + nums[i])\n    return True",
+      "test_cases": [
+        {"input": [[2,3,1,1,4]], "expected": true},
+        {"input": [[3,2,1,0,4]], "expected": false},
+        {"input": [[0]], "expected": true}
+      ]
+    },
+    {
+      "id": 25,
+      "title": "Permutations",
+      "statement": "Write a function that returns all possible permutations of a given list of distinct integers.\nFor example, given [1,2,3], the function should return [[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]].",
+      "function_signature": "def permute(nums):",
+      "categories": ["Backtracking", "Algorithm implementation"],
+      "python_constructs": ["recursion", "for loop"],
+      "hints": [
+        "Use backtracking to generate all permutations.",
+        "Swap each element with the first element and recurse on the rest.",
+        "Handle duplicates by using a set to track used elements."
+      ],
+      "solution": "def permute(nums):\n    def backtrack(start, end):\n        if start == end:\n            output.append(nums[:])\n        for i in range(start, end):\n            nums[start], nums[i] = nums[i], nums[start]\n            backtrack(start + 1, end)\n            nums[start], nums[i] = nums[i], nums[start]\n    output = []\n    backtrack(0, len(nums))\n    return output",
+      "test_cases": [
+        {"input": [[1,2,3]], "expected": [[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,2,1],[3,1,2]]},
+        {"input": [[0,1]], "expected": [[0,1],[1,0]]},
+        {"input": [[1]], "expected": [[1]]}
+      ]
+    },
+    {
+      "id": 26,
+      "title": "Combination Sum",
+      "statement": "Write a function that finds all unique combinations of numbers that add up to a target value,\ngiven a list of candidate numbers and a target value.\nEach number in the candidates may be used multiple times in the combination.\nFor example, given the candidates [2,3,6,7] and target 7,\nthe function should return [[7],[2,2,3],[2,3,2]].",
+      "function_signature": "def combination_sum(candidates, target):",
+      "categories": ["Backtracking", "Algorithm implementation"],
+      "python_constructs": ["recursion", "for loop"],
+      "hints": [
+        "Use backtracking to explore all combinations.",
+        "Skip duplicates by sorting the candidates and checking the previous element.",
+        "Terminate the recursion when the target is reached or exceeded."
+      ],
+      "solution": "def combination_sum(candidates, target):\n    def backtrack(start, path, target):\n        if target == 0:\n            output.append(path)\n            return\n        if target < 0:\n            return\n        for i in range(start, len(candidates)):\n            if i > start and candidates[i] == candidates[i - 1]:\n                continue\n            backtrack(i, path + [candidates[i]], target - candidates[i])\n    candidates.sort()\n    output = []\n    backtrack(0, [], target)\n    return output",
+      "test_cases": [
+        {"input": [[2,3,6,7], 7], "expected": [[7],[2,2,3],[2,3,2]]},
+        {"input": [[2,3,5], 8], "expected": [[2,2,2,2],[2,3,3],[3,5]]},
+        {"input": [[1], 1], "expected": [[1]]}
+      ]
+    },
+    {
+      "id": 27,
+      "title": "Letter Combinations of a Phone Number",
+      "statement": "Write a function that returns all possible letter combinations that the number could represent,\ngiven a string containing digits 2-9 inclusive,\nwhere each digit maps to a set of letters as on a telephone keypad.\nFor example, given '23', the function should return ['ad', 'ae', 'af', 'bd', 'be', 'bf', 'cd', 'ce', 'cf'].",
+      "function_signature": "def letter_combinations(digits):",
+      "categories": ["Backtracking", "Algorithm implementation"],
+      "python_constructs": ["recursion", "for loop"],
+      "hints": [
+        "Use a mapping of digits to letters as on a telephone keypad.",
+        "Use backtracking to generate all combinations of letters.",
+        "Terminate the recursion when the combination reaches the length of the digits."
+      ],
+      "solution": "def letter_combinations(digits):\n    if not digits:\n        return []\n    phone_map = {\n        '2': 'abc', '3': 'def', '4': 'ghi', '5': 'jkl',\n        '6': 'mno', '7': 'pqrs', '8': 'tuv', '9': 'wxyz'\n    }\n    def backtrack(index, path):\n        if index == len(digits):\n            output.append(''.join(path))\n            return\n        possible_letters = phone_map[digits[index]]\n        for letter in possible_letters:\n            path.append(letter)\n            backtrack(index + 1, path)\n            path.pop()\n    output = []\n    backtrack(0, [])\n    return output",
+      "test_cases": [
+        {"input": ["23"], "expected": ["ad","ae","af","bd","be","bf","cd","ce","cf"]},
+        {"input": ["2"], "expected": ["a","b","c"]},
+        {"input": [""], "expected": []}
+      ]
+    },
+    {
+      "id": 28,
+      "title": "Generate Parentheses",
+      "statement": "Write a function that generates all combinations of n pairs of valid parentheses.\nFor example, given n = 3, the function should return ['((()))', '(()())', '(())()', '()(())', '()()()'].",
+      "function_signature": "def generate_parenthesis(n):",
+      "categories": ["Backtracking", "Algorithm implementation"],
+      "python_constructs": ["recursion", "for loop"],
+      "hints": [
+        "Use backtracking to generate all combinations of parentheses.",
+        "Track the number of open and close parentheses used.",
+        "Terminate the recursion when the combination reaches the maximum length."
+      ],
+      "solution": "def generate_parenthesis(n):\n    def backtrack(path, open, close):\n        if len(path) == 2 * n:\n            output.append(''.join(path))\n            return\n        if open < n:\n            path.append('(')\n            backtrack(path, open + 1, close)\n            path.pop()\n        if close < open:\n            path.append(')')\n            backtrack(path, open, close + 1)\n            path.pop()\n    output = []\n    backtrack([], 0, 0)\n    return output",
+      "test_cases": [
+        {"input": [3], "expected": ["((()))","(()())","(())()","()(())","()()()"]},
+        {"input": [1], "expected": ["()"]},
+        {"input": [0], "expected": []}
+      ]
+    },
+    {
+      "id": 29,
+      "title": "Spiral Matrix",
+      "statement": "Write a function that returns the elements of an NxN matrix in spiral order.\nFor example, given the matrix [[1,2,3],[4,5,6],[7,8,9]],\nthe function should return [1,2,3,6,9,8,7,4,5].",
+      "function_signature": "def spiral_order(matrix):",
+      "categories": ["Matrix operations", "Algorithm implementation"],
+      "python_constructs": ["while loop", "if statement"],
+      "hints": [
+        "Define the boundaries of the spiral: top, bottom, left, right.",
+        "Iterate in the order: left to right, top to bottom, right to left, bottom to top.",
+        "Narrow the boundaries after completing each pass."
+      ],
+      "solution": "def spiral_order(matrix):\n    result = []\n    if not matrix:\n        return result\n    top, bottom, left, right = 0, len(matrix) - 1, 0, len(matrix[0]) - 1\n    while top <= bottom and left <= right:\n        for i in range(left, right + 1):\n            result.append(matrix[top][i])\n        top += 1\n        for i in range(top, bottom + 1):\n            result.append(matrix[i][right])\n        right -= 1\n        if top <= bottom:\n            for i in range(right, left - 1, -1):\n                result.append(matrix[bottom][i])\n            bottom -= 1\n        if left <= right:\n            for i in range(bottom, top - 1, -1):\n                result.append(matrix[i][left])\n            left += 1\n    return result",
+      "test_cases": [
+        {"input": [[[1,2,3],[4,5,6],[7,8,9]]], "expected": [1,2,3,6,9,8,7,4,5]},
+        {"input": [[[1,2],[3,4]]], "expected": [1,2,4,3]},
+        {"input": [[[1]]], "expected": [1]}
+      ]
+    },
+    {
+      "id": 30,
+      "title": "Valid Palindrome",
+      "statement": "Write a function that determines if a given string is a valid palindrome,\nconsidering only alphanumeric characters and ignoring cases.\nFor example, 'A man a plan a canal Panama' is a valid palindrome.",
+      "function_signature": "def is_valid_palindrome(s):",
+      "categories": ["String processing and validation", "Algorithm implementation"],
+      "python_constructs": ["two pointers", "for loop"],
+      "hints": [
+        "Use two pointers, one at the start and one at the end of the string.",
+        "Ignore non-alphanumeric characters and adjust the pointers accordingly.",
+        "Compare the characters at the two pointers for equality."
+      ],
+      "solution": "def is_valid_palindrome(s):\n    s = ''.join(c.lower() for c in s if c.isalnum())\n    left, right = 0, len(s) - 1\n    while left < right:\n        if s[left] != s[right]:\n            return False\n        left += 1\n        right -= 1\n    return True",
+      "test_cases": [
+        {"input": ["A man a plan a canal Panama"], "expected": true},
+        {"input": ["race a car"], "expected": false},
+        {"input": [" "], "expected": true}
+      ]
+    },
+    {
+      "id": 31,
+      "title": "Reverse Linked List",
+      "statement": "Write a function that reverses a singly linked list and returns the head of the reversed list.\nFor example, given the linked list 1->2->3->4->5,\nthe function should return 5->4->3->2->1.",
+      "function_signature": "def reverse_linked_list(head):",
+      "categories": ["Linked list operations", "Algorithm implementation"],
+      "python_constructs": ["while loop", "if statement"],
+      "hints": [
+        "Use three pointers: prev, curr, and next.",
+        "Iterate through the list and reverse the links between nodes.",
+        "Update the head pointer to the new first node."
+      ],
+      "solution": "def reverse_linked_list(head):\n    prev = None\n    curr = head\n    while curr:\n        next_temp = curr.next\n        curr.next = prev\n        prev = curr\n        curr = next_temp\n    return prev",
+      "test_cases": [
+        {"input": [[1,2,3,4,5]], "expected": [5,4,3,2,1]},
+        {"input": [[1]], "expected": [1]},
+        {"input": [null], "expected": []}
+      ]
+    },
+    {
+      "id": 32,
+      "title": "Merge Two Sorted Lists",
+      "statement": "Write a function that merges two sorted linked lists and returns the merged sorted list.\nFor example, given the linked lists 1->2->4 and 1->3->4,\nthe function should return 1->1->2->3->4->4.",
+      "function_signature": "def merge_two_sorted_lists(l1, l2):",
+      "categories": ["Linked list operations", "Algorithm implementation"],
+      "python_constructs": ["while loop", "if statement"],
+      "hints": [
+        "Use a dummy node to simplify the merging process.",
+        "Iterate through both lists and attach the smaller node to the merged list.",
+        "Handle any remaining nodes in either list."
+      ],
+      "solution": "def merge_two_sorted_lists(l1, l2):\n    dummy = ListNode(0)\n    tail = dummy\n    while l1 and l2:\n        if l1.val <= l2.val:\n            tail.next, l1 = l1, l1.next\n        else:\n            tail.next, l2 = l2, l2.next\n        tail = tail.next\n    tail.next = l1 or l2\n    return dummy.next",
+      "test_cases": [
+        {"input": [[1,2,4], [1,3,4]], "expected": [1,1,2,3,4,4]},
+        {"input": [[5], [1,2,3]], "expected": [1,2,3,5]},
+        {"input": [[], []], "expected": []}
+      ]
+    },
+    {
+      "id": 33,
+      "title": "Detect Cycle in a Linked List",
+      "statement": "Write a function that detects if there is a cycle in a linked list.\nThe function should return true if there is a cycle, and false otherwise.\nFor example, given the linked list 3->2->0->4->2 (cycle back to node with value 2),\nthe function should return true.",
+      "function_signature": "def has_cycle(head):",
+      "categories": ["Linked list operations", "Algorithm implementation"],
+      "python_constructs": ["slow and fast pointers"],
+      "hints": [
+        "Use two pointers, slow and fast, initialized at the head of the list.",
+        "Move the slow pointer one step and the fast pointer two steps in each iteration.",
+        "If there is a cycle, the fast pointer will eventually meet the slow pointer."
+      ],
+      "solution": "def has_cycle(head):\n    slow = fast = head\n    while fast and fast.next:\n        slow = slow.next\n        fast = fast.next.next\n        if slow == fast:\n            return True\n    return False",
+      "test_cases": [
+        {"input": [[3,2,0,4]], "expected": true},
+        {"input": [[1,2,3,4,5]], "expected": false},
+        {"input": [null], "expected": false}
+      ]
+    },
+    {
+      "id": 34,
+      "title": "Find the Duplicate Number",
+      "statement": "Write a function that finds the duplicate number in an array containing n+1 integers\nwhere each integer is between 1 and n (inclusive).\nThere is guaranteed to be only one duplicate number.\nFor example, given the array [3, 1, 3, 4, 2],\nthe function should return 3.",
+      "function_signature": "def find_duplicate(nums):",
+      "categories": ["Algorithm implementation", "Array/List manipulation"],
+      "python_constructs": ["set", "for loop"],
+      "hints": [
+        "Use a set to track the numbers you have seen so far.",
+        "Iterate through the array and check if the number is already in the set.",
+        "The first number that is already in the set is the duplicate."
+      ],
+      "solution": "def find_duplicate(nums):\n    seen = set()\n    for num in nums:\n        if num in seen:\n            return num\n        seen.add(num)\n    return None",
+      "test_cases": [
+        {"input": [[3,1,3,4,2]], "expected": 3},
+        {"input": [[2,3,1,4,4,5]], "expected": 4},
+        {"input": [[1,2,3,4,5,6,7,8,9,10,1]], "expected": 1}
+      ]
+    },
+    {
+      "id": 35,
+      "title": "Maximum Product Subarray",
+      "statement": "Write a function that finds the contiguous subarray within an array (containing at least one number)\nwhich has the largest product.\nFor example, given the array [2,3,-2,4],\nthe function should return 6, as the maximum product subarray is [2,3].",
+      "function_signature": "def max_product_subarray(nums):",
+      "categories": ["Dynamic programming", "Greedy algorithms"],
+      "python_constructs": ["for loop", "if statement"],
+      "hints": [
+        "Use dynamic programming to build up the solution.",
+        "The maximum product subarray ending at an index is the maximum of the current number, the maximum product subarray ending at the previous index times the current number, and the minimum product subarray ending at the previous index times the current number.",
+        "Keep track of the global maximum product subarray."
+      ],
+      "solution": "def max_product_subarray(nums):\n    max_ending_here = min_ending_here = max_so_far = nums[0]\n    for x in nums[1:]:\n        if x < 0:\n            max_ending_here, min_ending_here = min_ending_here, max_ending_here\n        max_ending_here = max(x, max_ending_here * x)\n        min_ending_here = min(x, min_ending_here * x)\n        max_so_far = max(max_so_far, max_ending_here)\n    return max_so_far",
+      "test_cases": [
+        {"input": [[2,3,-2,4]], "expected": 6},
+        {"input": [[-2,0,-1]], "expected": 0},
+        {"input": [[-2,3,-4]], "expected": 24}
+      ]
+    },
+    {
+      "id": 36,
+      "title": "Find the Longest Palindromic Substring",
+      "statement": "Write a function that finds the longest palindromic substring in a given string.\nFor example, given the string 'babad', the function should return 'bab' or 'aba',\nas both are the longest palindromic substrings.",
+      "function_signature": "def longest_palindromic_substring(s):",
+      "categories": ["String processing and validation", "Dynamic programming"],
+      "python_constructs": ["for loop", "if statement"],
+      "hints": [
+        "Use dynamic programming to build up the solution.",
+        "A palindrome reads the same forwards and backwards.",
+        "Check for palindromes of even and odd lengths."
+      ],
+      "solution": "def longest_palindromic_substring(s):\n    n = len(s)\n    if n == 0:\n        return ''\n    start, max_length = 0, 1\n    dp = [[False] * n for _ in range(n)]\n    for i in range(n):\n        dp[i][i] = True\n    for cl in range(2, n + 1):\n        for i in range(n - cl + 1):\n            j = i + cl - 1\n            if s[i] == s[j] and (cl == 2 or dp[i + 1][j - 1]):\n                dp[i][j] = True\n                if cl > max_length:\n                    max_length = cl\n                    start = i\n    return s[start:start + max_length]",
+      "test_cases": [
+        {"input": ["babad"], "expected": "bab"},
+        {"input": ["cbbd"], "expected": "bb"},
+        {"input": ["a"], "expected": "a"}
+      ]
+    },
+    {
+      "id": 37,
+      "title": "Kth Smallest Element in a BST",
+      "statement": "Write a function that finds the kth smallest element in a binary search tree (BST).\nFor example, given the BST below and k=3,\nthe function should return 4, as it is the 3rd smallest element.",
+      "function_signature": "def kth_smallest_in_bst(root, k):",
+      "categories": ["Tree traversal", "Binary search tree operations"],
+      "python_constructs": ["inorder traversal", "recursion"],
+      "hints": [
+        "Use inorder traversal to retrieve the elements of the BST in sorted order.",
+        "Keep track of the number of visited nodes during the traversal.",
+        "Return the node value when the count equals k."
+      ],
+      "solution": "def kth_smallest_in_bst(root, k):\n    def inorder_traversal(node):\n        return inorder_traversal(node.left) + [node.val] + inorder_traversal(node.right) if node else []\n    sorted_elements = inorder_traversal(root)\n    return sorted_elements[k - 1] if 0 < k <= len(sorted_elements) else None",
+      "test_cases": [
+        {"input": [[3,1,4,null,2], 1], "expected": 1},
+        {"input": [[3,1,4,null,2], 2], "expected": 2},
+        {"input": [[3,1,4,null,2], 3], "expected": 3}
+      ]
+    },
+    {
+      "id": 38,
+      "title": "Lowest Common Ancestor in a BST",
+      "statement": "Write a function that finds the lowest common ancestor of two nodes in a binary search tree (BST).\nThe lowest common ancestor is the deepest node that is an ancestor to both nodes.\nGiven the BST below and nodes 2 and 4,\nthe function should return 2, as it is the lowest common ancestor of nodes 2 and 4.",
+      "function_signature": "def lowest_common_ancestor_bst(root, p, q):",
+      "categories": ["Tree traversal", "Binary search tree operations"],
+      "python_constructs": ["recursion", "if statement"],
+      "hints": [
+        "Use the properties of a BST to find the lowest common ancestor.",
+        "If both nodes are smaller than the root, the LCA is in the left subtree.",
+        "If both nodes are larger than the root, the LCA is in the right subtree."
+      ],
+      "solution": "def lowest_common_ancestor_bst(root, p, q):\n    if not root or root == p or root == q:\n        return root\n    left = lowest_common_ancestor_bst(root.left, p, q)\n    right = lowest_common_ancestor_bst(root.right, p, q)\n    return root if left and right else left or right",
+      "test_cases": [
+        {"input": [[6,2,8,0,4,7,9,null,null,3,5], 2, 4], "expected": 2},
+        {"input": [[6,2,8,0,4,7,9,null,null,3,5], 2, 5], "expected": 2},
+        {"input": [[6,2,8,0,4,7,9,null,null,3,5], 3, 5], "expected": 3}
+      ]
+    },
+    {
+      "id": 39,
+      "title": "Binary Tree Inorder Traversal",
+      "statement": "Write a function that performs an inorder traversal of a binary tree and returns the values in a list.\nFor example, given the binary tree below,\nthe function should return '[1,2,3,4,5,6,7]'.",
+      "function_signature": "def inorder_traversal(root):",
+      "categories": ["Tree traversal", "Binary tree operations"],
+      "python_constructs": ["recursion", "if statement"],
+      "hints": [
+        "Use recursion to perform an inorder traversal.",
+        "Visit the left subtree, then the current node, then the right subtree.",
+        "Append the values to a list in the order they are visited."
+      ],
+      "solution": "def inorder_traversal(root):\n    return inorder_traversal(root.left) + [root.val] + inorder_traversal(root.right) if root else []",
+      "test_cases": [
+        {"input": [[1,2,3,null,null,4,5]], "expected": [1,2,4,5,3]},
+        {"input": [[3,1,4,null,2]], "expected": [1,2,3,4]},
+        {"input": [null], "expected": []}
+      ]
+    },
+    {
+      "id": 40,
+      "title": "Binary Tree Postorder Traversal",
+      "statement": "Write a function that performs a postorder traversal of a binary tree and returns the values in a list.\nFor example, given the binary tree below,\nthe function should return '[4,5,2,6,7,3,1]'.",
+      "function_signature": "def postorder_traversal(root):",
+      "categories": ["Tree traversal", "Binary tree operations"],
+      "python_constructs": ["recursion", "if statement"],
+      "hints": [
+        "Use recursion to perform a postorder traversal.",
+        "Visit the left subtree, then the right subtree, then the current node.",
+        "Append the values to a list in the order they are visited."
+      ],
+      "solution": "def postorder_traversal(root):\n    return postorder_traversal(root.left) + postorder_traversal(root.right) + [root.val] if root else []",
+      "test_cases": [
+        {"input": [[1,2,3,null,null,4,5]], "expected": [4,5,2,3,1]},
+        {"input": [[3,1,4,null,2]], "expected": [2,1,4,3]},
+        {"input": [null], "expected": []}
+      ]
+    },
+    {
+      "id": 41,
+      "title": "Moving Window Average",
+      "statement": "Calculate the moving average for a stream of numbers using a sliding window of fixed size.\n\nGiven a list of numbers and a window size, return a list of averages where each average is calculated from the current number and the previous (window_size - 1) numbers. If there aren't enough previous numbers, use only the available numbers.\n\nExample: calculate_moving_average([1, 2, 3, 4, 5], 3) should return [1.0, 1.5, 2.0, 3.0, 4.0] representing averages of [1], [1,2], [1,2,3], [2,3,4], [3,4,5].",
+      "function_signature": "def calculate_moving_average(numbers, window_size):",
+      "categories": ["Array manipulation", "Sliding window", "Mathematical calculations"],
+      "hints": [
+        "Use a sliding window approach - maintain a window of the most recent numbers",
+        "For each new number, add it to the window and remove the oldest if window exceeds size",
+        "Calculate the average of current window elements and add to results"
+      ],
+      "solution": "def calculate_moving_average(numbers, window_size):\n    if not numbers or window_size <= 0:\n        return []\n    \n    if window_size == 1:\n        return [float(num) for num in numbers]\n    \n    window = []\n    averages = []\n    \n    for num in numbers:\n        # Add current number to window\n        window.append(num)\n        \n        # Remove oldest number if window exceeds size\n        if len(window) > window_size:\n            window.pop(0)\n        \n        # Calculate average of current window\n        current_avg = sum(window) / len(window)\n        averages.append(round(current_avg, 2))\n    \n    return averages",
+      "test_cases": [
+        {"input": [[1, 2, 3, 4, 5], 3], "expected": [1.0, 1.5, 2.0, 3.0, 4.0]},
+        {"input": [[10, 20, 30], 2], "expected": [10.0, 15.0, 25.0]},
+        {"input": [[5], 3], "expected": [5.0]},
+        {"input": [[1, 2, 3, 4, 5], 1], "expected": [1.0, 2.0, 3.0, 4.0, 5.0]},
+        {"input": [[], 3], "expected": []}
+      ]
+    },
+    {
+      "id": 42,
+      "title": "Two Sum",
+      "statement": "Given an array of integers nums and an integer target,\nreturn indices of the two numbers such that they add up to target.\nYou may assume that each input would have exactly one solution,\nand you may not use the same element twice.\nYou can return the answer in any order.\nExample 1: Input: nums = [2,7,11,15], target = 9. Output: [0,1].\nExplanation: Because nums[0] + nums[1] == 9, we return [0, 1].\nExample 2: Input: nums = [3,2,4], target = 6. Output: [1,2].\nExample 3: Input: nums = [3,3], target = 6. Output: [0,1].",
+      "function_signature": "def two_sum(nums, target):",
+      "categories": ["Array manipulation", "Hash table", "Algorithm implementation"],
+      "hints": [
+        "Use a hash table to store numbers and their indices as you iterate through the array",
+        "For each number, check if its complement (target - current number) exists in the hash table",
+        "If the complement exists, return the current index and the stored index of the complement"
+      ],
+      "solution": "def two_sum(nums, target):\n    # Dictionary to store number -> index mapping\n    num_to_index = {}\n    \n    for i, num in enumerate(nums):\n        complement = target - num\n        \n        # Check if complement exists in our hash table\n        if complement in num_to_index:\n            return [num_to_index[complement], i]\n        \n        # Store current number and its index\n        num_to_index[num] = i\n    \n    # Should never reach here given the problem constraints\n    return []",
+      "test_cases": [
+        {"input": [[2, 7, 11, 15], 9], "expected": [0, 1]},
+        {"input": [[3, 2, 4], 6], "expected": [1, 2]},
+        {"input": [[3, 3], 6], "expected": [0, 1]},
+        {"input": [[-1, -2, -3, -4, -5], -8], "expected": [2, 4]},
+        {"input": [[1, 5, 3, 7, 2], 10], "expected": [2, 3]}
+      ]
+    },
+    {
+      "id": 43,
+      "title": "Password Complexity Validator",
+      "statement": "Create a password complexity validator that checks multiple criteria:\nminimum 8 characters long, at least 1 uppercase letter,\nat least 1 lowercase letter, at least 2 digits,\nand at least 2 special characters (!@#$%^&*).\nReturn a dictionary with overall validity and detailed feedback for each criterion.\nExample: validate_password_complexity('MyPass12!@') should return detailed validation results showing which criteria are met.",
+      "function_signature": "def validate_password_complexity(password):",
+      "categories": ["String processing", "Data validation", "Pattern matching"],
+      "hints": [
+        "Check each criterion separately using string methods and counting functions",
+        "Use sum() with generator expressions to count specific character types",
+        "Return both individual criterion results and overall validity based on all criteria being met"
+      ],
+      "solution": "def validate_password_complexity(password):\n    if not password:\n        return {\n            'valid': False,\n            'criteria': {\n                'length': False,\n                'uppercase': False,\n                'lowercase': False,\n                'digits': False,\n                'special_chars': False\n            },\n            'score': 0,\n            'details': {\n                'length_count': 0,\n                'uppercase_count': 0,\n                'lowercase_count': 0,\n                'digit_count': 0,\n                'special_char_count': 0\n            }\n        }\n    \n    # Define special characters\n    special_chars = '!@#$%^&*'\n    \n    # Count each type of character\n    length_count = len(password)\n    uppercase_count = sum(1 for c in password if c.isupper())\n    lowercase_count = sum(1 for c in password if c.islower())\n    digit_count = sum(1 for c in password if c.isdigit())\n    special_char_count = sum(1 for c in password if c in special_chars)\n    \n    # Check each criterion\n    criteria = {\n        'length': length_count >= 8,\n        'uppercase': uppercase_count >= 1,\n        'lowercase': lowercase_count >= 1,\n        'digits': digit_count >= 2,\n        'special_chars': special_char_count >= 2\n    }\n    \n    # Calculate score and overall validity\n    score = sum(criteria.values())\n    valid = all(criteria.values())\n    \n    return {\n        'valid': valid,\n        'criteria': criteria,\n        'score': score,\n        'details': {\n            'length_count': length_count,\n            'uppercase_count': uppercase_count,\n            'lowercase_count': lowercase_count,\n            'digit_count': digit_count,\n            'special_char_count': special_char_count\n        }\n    }",
+      "test_cases": [
+        {"input": ["MyPass12!@"], "expected": {"valid": true, "criteria": {"length": true, "uppercase": true, "lowercase": true, "digits": true, "special_chars": true}, "score": 5, "details": {"length_count": 10, "uppercase_count": 2, "lowercase_count": 4, "digit_count": 2, "special_char_count": 2}}},
+        {"input": ["weak"], "expected": {"valid": false, "criteria": {"length": false, "uppercase": false, "lowercase": true, "digits": false, "special_chars": false}, "score": 1, "details": {"length_count": 4, "uppercase_count": 0, "lowercase_count": 4, "digit_count": 0, "special_char_count": 0}}},
+        {"input": [""], "expected": {"valid": false, "criteria": {"length": false, "uppercase": false, "lowercase": false, "digits": false, "special_chars": false}, "score": 0, "details": {"length_count": 0, "uppercase_count": 0, "lowercase_count": 0, "digit_count": 0, "special_char_count": 0}}},
+        {"input": ["Password1!"], "expected": {"valid": false, "criteria": {"length": true, "uppercase": true, "lowercase": true, "digits": false, "special_chars": false}, "score": 3, "details": {"length_count": 10, "uppercase_count": 1, "lowercase_count": 7, "digit_count": 1, "special_char_count": 1}}},
+        {"input": ["StrongPass123!!"], "expected": {"valid": true, "criteria": {"length": true, "uppercase": true, "lowercase": true, "digits": true, "special_chars": true}, "score": 5, "details": {"length_count": 15, "uppercase_count": 2, "lowercase_count": 8, "digit_count": 3, "special_char_count": 2}}}
+      ]
+    }
+  ]
+}

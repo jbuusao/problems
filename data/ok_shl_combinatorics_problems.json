@@ -1,0 +1,214 @@
+{
+  "problems": [
+    {
+      "id": 11,
+      "title": "Calculate Combinations (nCr)",
+      "statement": "Calculate the number of ways to choose r items from n items where order doesn't matter. This is the mathematical combination formula nCr = n! / (r! * (n-r)!). For example, choosing 2 items from 5 items: C(5,2) = 10. Handle edge cases where r > n (return 0) and optimize for large numbers to avoid overflow.",
+      "function_signature": "def calculate_combinations(n, r):",
+      "categories": ["combinatorics_and_counting", "mathematical_algorithms"],
+      "python_constructs": ["math_factorial", "conditional_logic", "integer_division", "optimization"],
+      "hints": [
+        "Use the mathematical formula nCr = n! / (r! * (n-r)!) but optimize to avoid large factorials",
+        "Take advantage of the symmetry: C(n,r) = C(n,n-r) to minimize calculations",
+        "Calculate iteratively: multiply by (n-i+1) and divide by i for each i from 1 to r"
+      ],
+      "solution": "def calculate_combinations(n, r):\n    # Handle edge cases\n    if r < 0 or n < 0 or r > n:\n        return 0\n    if r == 0 or r == n:\n        return 1\n    \n    # Use symmetry to minimize calculations\n    r = min(r, n - r)\n    \n    result = 1\n    for i in range(r):\n        result = result * (n - i) // (i + 1)\n    \n    return result",
+      "test_cases": [
+        {"input": [5, 2], "expected": 10},
+        {"input": [10, 3], "expected": 120},
+        {"input": [5, 0], "expected": 1},
+        {"input": [5, 5], "expected": 1},
+        {"input": [3, 5], "expected": 0}
+      ]
+    },
+    {
+      "id": 12,
+      "title": "Calculate Permutations (nPr)",
+      "statement": "Calculate the number of ways to arrange r items from n items where order matters. This is the mathematical permutation formula nPr = n! / (n-r)!. For example, arranging 2 items from 5 items: P(5,2) = 20. Handle edge cases where r > n (return 0) and r = 0 (return 1).",
+      "function_signature": "def calculate_permutations(n, r):",
+      "categories": ["combinatorics_and_counting", "mathematical_algorithms"],
+      "python_constructs": ["for_loop", "range_function", "conditional_logic", "multiplication"],
+      "hints": [
+        "Use the formula nPr = n! / (n-r)! which simplifies to n * (n-1) * ... * (n-r+1)",
+        "Calculate iteratively by multiplying consecutive descending numbers starting from n",
+        "Handle edge cases carefully: r > n returns 0, r = 0 returns 1"
+      ],
+      "solution": "def calculate_permutations(n, r):\n    # Handle edge cases\n    if r < 0 or n < 0 or r > n:\n        return 0\n    if r == 0:\n        return 1\n    \n    result = 1\n    for i in range(n, n - r, -1):\n        result *= i\n    \n    return result",
+      "test_cases": [
+        {"input": [5, 2], "expected": 20},
+        {"input": [10, 3], "expected": 720},
+        {"input": [5, 0], "expected": 1},
+        {"input": [5, 5], "expected": 120},
+        {"input": [3, 5], "expected": 0}
+      ]
+    },
+    {
+      "id": 13,
+      "title": "Count Ways to Climb Stairs",
+      "statement": "You are climbing a staircase with n steps. Each time you can either climb 1 or 2 steps. How many distinct ways can you climb to the top? For example, for n=3 stairs, there are 3 ways: (1+1+1), (1+2), (2+1). This is essentially a Fibonacci sequence problem.",
+      "function_signature": "def count_stair_ways(n):",
+      "categories": ["combinatorics_and_counting", "dynamic_programming", "recursion"],
+      "python_constructs": ["dynamic_programming", "fibonacci_sequence", "memoization", "base_cases"],
+      "hints": [
+        "This follows the Fibonacci pattern: ways(n) = ways(n-1) + ways(n-2)",
+        "Use dynamic programming to avoid redundant calculations",
+        "Base cases: 1 step has 1 way, 2 steps have 2 ways"
+      ],
+      "solution": "def count_stair_ways(n):\n    if n <= 0:\n        return 0\n    if n == 1:\n        return 1\n    if n == 2:\n        return 2\n    \n    # Dynamic programming approach\n    prev2, prev1 = 1, 2\n    \n    for i in range(3, n + 1):\n        current = prev1 + prev2\n        prev2, prev1 = prev1, current\n    \n    return prev1",
+      "test_cases": [
+        {"input": [3], "expected": 3},
+        {"input": [1], "expected": 1},
+        {"input": [2], "expected": 2},
+        {"input": [5], "expected": 8},
+        {"input": [0], "expected": 0}
+      ]
+    },
+    {
+      "id": 14,
+      "title": "Generate All Permutations",
+      "statement": "Given an array of distinct integers, return all possible permutations in any order. For example, [1,2,3] should return [[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]]. The solution should handle arrays of any length efficiently.",
+      "function_signature": "def generate_permutations(nums):",
+      "categories": ["combinatorics_and_counting", "recursion", "backtracking"],
+      "python_constructs": ["recursion", "backtracking", "list_slicing", "list_comprehension"],
+      "hints": [
+        "Use backtracking: choose an element, recursively permute the rest, then backtrack",
+        "For each position, try each remaining unused element",
+        "Base case: empty array has one permutation (itself)"
+      ],
+      "solution": "def generate_permutations(nums):\n    if not nums:\n        return [[]]\n    \n    result = []\n    \n    def backtrack(current_perm, remaining):\n        if not remaining:\n            result.append(current_perm[:])\n            return\n        \n        for i in range(len(remaining)):\n            # Choose\n            current_perm.append(remaining[i])\n            # Explore\n            backtrack(current_perm, remaining[:i] + remaining[i+1:])\n            # Unchoose (backtrack)\n            current_perm.pop()\n    \n    backtrack([], nums)\n    return result",
+      "test_cases": [
+        {"input": [[1, 2, 3]], "expected": [[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]]},
+        {"input": [[1, 2]], "expected": [[1,2],[2,1]]},
+        {"input": [[1]], "expected": [[1]]},
+        {"input": [[]], "expected": [[]]},
+        {"input": [[1, 2, 3, 4]], "expected": 24}
+      ]
+    },
+    {
+      "id": 15,
+      "title": "Count Coin Change Ways",
+      "statement": "Given an amount and an array of coin denominations, count the number of ways to make that amount. Each coin can be used unlimited times. For example, amount=4 with coins=[1,2,3] has 4 ways: (1+1+1+1), (1+1+2), (2+2), (1+3). Order doesn't matter.",
+      "function_signature": "def count_coin_ways(amount, coins):",
+      "categories": ["combinatorics_and_counting", "dynamic_programming"],
+      "python_constructs": ["dynamic_programming", "nested_loops", "list_initialization"],
+      "hints": [
+        "Use dynamic programming: dp[i] represents ways to make amount i",
+        "For each coin, update all amounts from coin value to target amount",
+        "Build solution bottom-up: ways to make larger amounts depend on smaller amounts"
+      ],
+      "solution": "def count_coin_ways(amount, coins):\n    if amount == 0:\n        return 1\n    if not coins or amount < 0:\n        return 0\n    \n    # dp[i] = number of ways to make amount i\n    dp = [0] * (amount + 1)\n    dp[0] = 1  # One way to make amount 0 (use no coins)\n    \n    # For each coin denomination\n    for coin in coins:\n        # Update ways for all amounts from coin to target\n        for i in range(coin, amount + 1):\n            dp[i] += dp[i - coin]\n    \n    return dp[amount]",
+      "test_cases": [
+        {"input": [4, [1, 2, 3]], "expected": 4},
+        {"input": [5, [1, 2, 5]], "expected": 4},
+        {"input": [0, [1, 2]], "expected": 1},
+        {"input": [3, [2]], "expected": 0},
+        {"input": [10, [2, 3, 5, 10]], "expected": 5}
+      ]
+    },
+    {
+      "id": 16,
+      "title": "Count Paths in Grid",
+      "statement": "Count the number of unique paths from top-left to bottom-right in an m×n grid. You can only move right or down. For example, in a 3×2 grid, there are 3 unique paths. This is a classic combinatorial problem: C(m+n-2, m-1).",
+      "function_signature": "def count_grid_paths(m, n):",
+      "categories": ["combinatorics_and_counting", "dynamic_programming", "mathematical_algorithms"],
+      "python_constructs": ["dynamic_programming", "mathematical_formula", "nested_loops"],
+      "hints": [
+        "This is equivalent to choosing m-1 right moves from total m+n-2 moves",
+        "Can be solved using combinations: C(m+n-2, m-1)",
+        "Alternative: use dynamic programming with 2D array"
+      ],
+      "solution": "def count_grid_paths(m, n):\n    if m <= 0 or n <= 0:\n        return 0\n    if m == 1 or n == 1:\n        return 1\n    \n    # Using combinatorial approach: C(m+n-2, m-1)\n    def combinations(n, r):\n        if r > n or r < 0:\n            return 0\n        if r == 0 or r == n:\n            return 1\n        \n        r = min(r, n - r)  # Use symmetry\n        result = 1\n        for i in range(r):\n            result = result * (n - i) // (i + 1)\n        return result\n    \n    return combinations(m + n - 2, m - 1)",
+      "test_cases": [
+        {"input": [3, 2], "expected": 3},
+        {"input": [3, 7], "expected": 28},
+        {"input": [1, 1], "expected": 1},
+        {"input": [2, 2], "expected": 2},
+        {"input": [4, 4], "expected": 20}
+      ]
+    },
+    {
+      "id": 17,
+      "title": "Generate All Combinations",
+      "statement": "Given an array of distinct integers and a number k, return all possible combinations of k numbers. For example, nums=[1,2,3,4] and k=2 should return [[1,2],[1,3],[1,4],[2,3],[2,4],[3,4]]. The order of combinations doesn't matter.",
+      "function_signature": "def generate_combinations(nums, k):",
+      "categories": ["combinatorics_and_counting", "recursion", "backtracking"],
+      "python_constructs": ["recursion", "backtracking", "list_slicing", "range_function"],
+      "hints": [
+        "Use backtracking: at each step, decide whether to include the current element",
+        "Keep track of current combination and remaining elements to choose from",
+        "Ensure combinations are generated in lexicographic order"
+      ],
+      "solution": "def generate_combinations(nums, k):\n    if k == 0:\n        return [[]]\n    if not nums or len(nums) < k:\n        return []\n    \n    result = []\n    \n    def backtrack(start_idx, current_combo):\n        # Base case: we have k elements\n        if len(current_combo) == k:\n            result.append(current_combo[:])\n            return\n        \n        # Try each remaining element\n        for i in range(start_idx, len(nums)):\n            current_combo.append(nums[i])\n            backtrack(i + 1, current_combo)\n            current_combo.pop()\n    \n    backtrack(0, [])\n    return result",
+      "test_cases": [
+        {"input": [[1, 2, 3, 4], 2], "expected": [[1,2],[1,3],[1,4],[2,3],[2,4],[3,4]]},
+        {"input": [[1, 2, 3], 1], "expected": [[1],[2],[3]]},
+        {"input": [[1, 2, 3], 3], "expected": [[1,2,3]]},
+        {"input": [[1, 2], 3], "expected": []},
+        {"input": [[1, 2, 3, 4], 0], "expected": [[]]}
+      ]
+    },
+    {
+      "id": 18,
+      "title": "Count Anagrams of Word",
+      "statement": "Given a word, count the number of unique anagrams (rearrangements) it can form. Handle repeated letters correctly using the formula: n! / (n1! × n2! × ... × nk!) where n1, n2, etc. are frequencies of repeated letters. For example, 'BOOK' has 4!/(2!×1!×1!) = 12 anagrams.",
+      "function_signature": "def count_anagrams(word):",
+      "categories": ["combinatorics_and_counting", "string_processing", "mathematical_algorithms"],
+      "python_constructs": ["collections_counter", "math_factorial", "dictionary_operations"],
+      "hints": [
+        "Count frequency of each character in the word",
+        "Use the formula: total_length! divided by product of factorials of frequencies",
+        "Handle empty string and single character cases"
+      ],
+      "solution": "def count_anagrams(word):\n    if not word:\n        return 1\n    \n    import math\n    from collections import Counter\n    \n    # Count frequency of each character\n    char_count = Counter(word)\n    \n    # Calculate n! for total length\n    total_factorial = math.factorial(len(word))\n    \n    # Calculate product of factorials of frequencies\n    frequency_factorial_product = 1\n    for count in char_count.values():\n        frequency_factorial_product *= math.factorial(count)\n    \n    return total_factorial // frequency_factorial_product",
+      "test_cases": [
+        {"input": ["BOOK"], "expected": 12},
+        {"input": ["AAB"], "expected": 3},
+        {"input": ["ABC"], "expected": 6},
+        {"input": ["AAAA"], "expected": 1},
+        {"input": [""], "expected": 1}
+      ]
+    },
+    {
+      "id": 19,
+      "title": "Count Unique Paths with Obstacles",
+      "statement": "Count unique paths in an m×n grid from top-left to bottom-right, but some cells are blocked (marked as 1). You can only move right or down, and cannot pass through obstacles. For example, a 3×3 grid with obstacle at (1,1) has different path count than without obstacles.",
+      "function_signature": "def count_paths_with_obstacles(grid):",
+      "categories": ["combinatorics_and_counting", "dynamic_programming", "grid_traversal"],
+      "python_constructs": ["dynamic_programming", "nested_loops", "2d_array", "conditional_logic"],
+      "hints": [
+        "Use dynamic programming: dp[i][j] = number of ways to reach cell (i,j)",
+        "If a cell has obstacle, dp[i][j] = 0",
+        "Otherwise, dp[i][j] = dp[i-1][j] + dp[i][j-1]"
+      ],
+      "solution": "def count_paths_with_obstacles(grid):\n    if not grid or not grid[0] or grid[0][0] == 1:\n        return 0\n    \n    m, n = len(grid), len(grid[0])\n    \n    # Create DP table\n    dp = [[0] * n for _ in range(m)]\n    \n    # Initialize starting position\n    dp[0][0] = 1\n    \n    # Fill first row\n    for j in range(1, n):\n        if grid[0][j] == 0:\n            dp[0][j] = dp[0][j-1]\n    \n    # Fill first column\n    for i in range(1, m):\n        if grid[i][0] == 0:\n            dp[i][0] = dp[i-1][0]\n    \n    # Fill rest of the table\n    for i in range(1, m):\n        for j in range(1, n):\n            if grid[i][j] == 0:  # No obstacle\n                dp[i][j] = dp[i-1][j] + dp[i][j-1]\n    \n    return dp[m-1][n-1]",
+      "test_cases": [
+        {"input": [[[0,0,0],[0,1,0],[0,0,0]]], "expected": 2},
+        {"input": [[[0,1],[0,0]]], "expected": 1},
+        {"input": [[[1,0],[0,0]]], "expected": 0},
+        {"input": [[[0,0],[0,0]]], "expected": 2},
+        {"input": [[[0]]], "expected": 1}
+      ]
+    },
+    {
+      "id": 20,
+      "title": "Calculate Catalan Numbers",
+      "statement": "Calculate the nth Catalan number, which represents many combinatorial structures like valid parentheses combinations, binary trees, etc. The formula is C(n) = (2n)! / ((n+1)! × n!) or the recurrence C(n) = Σ(C(i) × C(n-1-i)) for i=0 to n-1. For example, C(3) = 5.",
+      "function_signature": "def catalan_number(n):",
+      "categories": ["combinatorics_and_counting", "mathematical_algorithms", "dynamic_programming"],
+      "python_constructs": ["dynamic_programming", "mathematical_formula", "for_loop", "list_initialization"],
+      "hints": [
+        "Use dynamic programming to build up from C(0) = 1",
+        "Apply the recurrence relation: C(n) = Σ(C(i) × C(n-1-i))",
+        "Alternative: use the direct formula with combinations C(n) = C(2n,n)/(n+1)"
+      ],
+      "solution": "def catalan_number(n):\n    if n < 0:\n        return 0\n    if n <= 1:\n        return 1\n    \n    # Use dynamic programming approach\n    catalan = [0] * (n + 1)\n    catalan[0] = catalan[1] = 1\n    \n    # Build up using recurrence relation\n    for i in range(2, n + 1):\n        for j in range(i):\n            catalan[i] += catalan[j] * catalan[i - 1 - j]\n    \n    return catalan[n]",
+      "test_cases": [
+        {"input": [3], "expected": 5},
+        {"input": [0], "expected": 1},
+        {"input": [1], "expected": 1},
+        {"input": [2], "expected": 2},
+        {"input": [4], "expected": 14}
+      ]
+    }
+  ]
+}

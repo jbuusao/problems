@@ -8,6 +8,7 @@ from collections import defaultdict
 from urllib.parse import urlparse, parse_qs
 import time
 from default_problems import get_default_problems
+import jsonschema
 
 # Page configuration
 st.set_page_config(
@@ -100,22 +101,14 @@ def init_session_state():
         st.session_state.current_hint_index = defaultdict(int)
 
 def load_problems():
-    """Load problems from memory and merge with uploaded problems"""
+    """Load problems from memory and replace with uploaded problems"""
     # Start with default problems
-    all_problems = get_default_problems()
-    
-    # Add uploaded problems if any
+    all_problems = {}
+
+    # Replace with uploaded problems if any
     if hasattr(st.session_state, 'uploaded_problems') and st.session_state.uploaded_problems:
-        # Merge uploaded problems, giving them IDs starting from 21
-        next_id = max(all_problems.keys()) + 1
-        for problem in st.session_state.uploaded_problems.values():
-            # Create a copy of the problem with a new ID if it conflicts
-            new_problem = problem.copy()
-            if problem['id'] in all_problems:
-                new_problem['id'] = next_id
-                next_id += 1
-            all_problems[new_problem['id']] = new_problem
-    
+        all_problems = {problem['id']: problem for problem in st.session_state.uploaded_problems.values()}
+
     return all_problems
 
 def execute_user_code(code, test_cases):
@@ -302,39 +295,67 @@ def main():
     # Sidebar for problem selection
     with st.sidebar:
         st.header("📋 Problems")
-        
+
+        # Filter problems by Python characteristics
+        st.markdown("**Filter Problems by Python Characteristics**")
+        characteristics = ["", "Recursion", "Loops", "Conditionals", "List Comprehension"]
+        selected_characteristic = st.selectbox(
+            "Select a characteristic:",
+            characteristics,
+            index=0,
+            help="Filter problems based on Python characteristics"
+        )
+
         # File uploader for additional problems
         with st.expander("📁 Upload Additional Problems"):
-            st.markdown("**Upload a JSON file to add more problems**")
+            st.markdown("**Upload a JSON file to replace existing problems**")
+
             uploaded_file = st.file_uploader(
                 "Select JSON file",
                 type=['json'],
-                help="Upload a JSON file containing additional problems in the same format"
+                help="Upload a JSON file containing problems in the same format"
             )
-            
+
             if uploaded_file is not None:
                 try:
                     # Read and parse the uploaded file
                     content = uploaded_file.read().decode('utf-8')
                     problems_data = json.loads(content)
-                    
-                    # Store in session state and reload
-                    if 'problems' in problems_data:
-                        st.session_state.uploaded_problems = {problem['id']: problem for problem in problems_data['problems']}
-                    else:
-                        # Assume the uploaded file is a list of problems
-                        st.session_state.uploaded_problems = {problem['id']: problem for problem in problems_data}
-                    
-                    # Reload all problems (this will merge default + uploaded)
+
+                    # Replace existing problems with uploaded ones
+                    st.session_state.uploaded_problems = {problem['id']: problem for problem in problems_data['problems']}
+
+                    # Reload all problems (this will replace default + uploaded)
                     st.session_state.problems = load_problems()
-                    st.success(f"✅ {len(st.session_state.uploaded_problems)} additional problems loaded!")
-                    st.rerun()  # Refresh the app
-                    
-                except json.JSONDecodeError as e:
-                    st.error(f"❌ Invalid JSON format: {str(e)}")
+
+                    st.success(f"✅ {len(st.session_state.uploaded_problems)} problems loaded!")
+
                 except Exception as e:
-                    st.error(f"❌ Error loading file: {str(e)}")
-        
+                    st.error(f"❌ Error during problem loading operation: {str(e)}")        
+
+                if st.button("Validate Solutions", key="validate_solutions_sidebar"):
+                    validation_results = []
+
+                    for problem_id, problem in st.session_state.problems.items():
+                        try:
+                            # Run the reference solution against test cases
+                            success, result = execute_user_code(problem['solution'], problem['test_cases'])
+
+                            if success:
+                                validation_results.append(f"✅ Problem {problem_id}: {problem['title']} - All test cases passed.")
+                            else:
+                                validation_results.append(f"❌ Problem {problem_id}: {problem['title']} - Errors found:\n{result}")
+                        except Exception as e:
+                            validation_results.append(f"❌ Problem {problem_id}: {problem['title']} - Execution error: {str(e)}")
+
+                    # Display validation results
+                    st.markdown("### Validation Results")
+                    for result in validation_results:
+                        if "✅" in result:
+                            st.markdown(f'<div class="success-box">{result}</div>', unsafe_allow_html=True)
+                        else:
+                            st.markdown(f'<div class="error-box">{result}</div>', unsafe_allow_html=True)
+
         st.markdown("---")
         
         # Overall progress
@@ -350,8 +371,31 @@ def main():
         
         st.markdown("---")
         
-        # Problem list
-        for problem_id, problem in st.session_state.problems.items():
+        # Problem list with pagination
+        problems_per_page = 10
+        total_pages = (len(st.session_state.problems) + problems_per_page - 1) // problems_per_page
+        
+        # Current page state
+        if 'current_page' not in st.session_state:
+            st.session_state.current_page = 0
+        
+        # Page navigation
+        col1, col2 = st.columns([1, 1])
+        with col1:
+            if st.session_state.current_page > 0:
+                if st.button("« Previous", key="prev_page"):
+                    st.session_state.current_page -= 1
+        with col2:
+            if st.session_state.current_page < total_pages - 1:
+                if st.button("Next »", key="next_page"):
+                    st.session_state.current_page += 1
+        
+        # Display problems for the current page
+        start_idx = st.session_state.current_page * problems_per_page
+        end_idx = min(start_idx + problems_per_page, len(st.session_state.problems))
+        
+        for problem_id in list(st.session_state.problems.keys())[start_idx:end_idx]:
+            problem = st.session_state.problems[problem_id]
             stats = st.session_state.user_stats[problem_id]
             success_rate = ""
             if stats['success'] + stats['failure'] > 0:
@@ -555,6 +599,7 @@ def main():
             st.markdown(f"**Test {i+1}:**")
             st.markdown(f"- Input: `{test_case['input']}`")
             st.markdown(f"- Expected Output: `{test_case['expected']}`")
+    
 
 if __name__ == "__main__":
     main()

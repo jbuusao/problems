@@ -1,0 +1,297 @@
+{
+  "problems": [
+    {
+      "id": 74,
+      "title": "Enhanced FizzBuzz Implementation",
+      "statement": "Implement the classic FizzBuzz problem with additional rules. Print numbers 1 to n, but replace multiples of 3 with 'Fizz', multiples of 5 with 'Buzz', multiples of 7 with 'Bang', and combinations accordingly. For example, 15 becomes 'FizzBuzz', 21 becomes 'FizzBang', 105 becomes 'FizzBuzzBang'. Return a list of strings.",
+      "function_signature": "def enhanced_fizzbuzz(n):",
+      "categories": ["pattern_recognition", "logic_and_conditional"],
+      "python_constructs": ["modulo_operations", "string_concatenation", "conditional_logic"],
+      "hints": [
+        "Check divisibility by 3, 5, and 7 for each number",
+        "Build result string by concatenating 'Fizz', 'Buzz', 'Bang' as needed",
+        "Use the original number if no divisibility conditions are met"
+      ],
+      "solution": "def enhanced_fizzbuzz(n):\n    if n <= 0:\n        return []\n    \n    result = []\n    \n    for i in range(1, n + 1):\n        output = ''\n        \n        if i % 3 == 0:\n            output += 'Fizz'\n        if i % 5 == 0:\n            output += 'Buzz'\n        if i % 7 == 0:\n            output += 'Bang'\n        \n        # If no conditions met, use the number\n        if not output:\n            output = str(i)\n        \n        result.append(output)\n    \n    return result",
+      "test_cases": [
+        {"input": [15], "expected": ["1", "2", "Fizz", "4", "Buzz", "Fizz", "Bang", "8", "Fizz", "Buzz", "11", "Fizz", "13", "Bang", "FizzBuzz"]},
+        {"input": [21], "expected": ["1", "2", "Fizz", "4", "Buzz", "Fizz", "Bang", "8", "Fizz", "Buzz", "11", "Fizz", "13", "Bang", "FizzBuzz", "16", "17", "Fizz", "19", "Buzz", "FizzBang"]},
+        {"input": [0], "expected": []},
+        {"input": [1], "expected": ["1"]},
+        {"input": [105], "expected": ["1", "2", "Fizz", "4", "Buzz", "Fizz", "Bang", "8", "Fizz", "Buzz", "11", "Fizz", "13", "Bang", "FizzBuzz", "16", "17", "Fizz", "19", "Buzz", "FizzBang", "22", "23", "Fizz", "Buzz", "26", "Fizz", "Bang", "29", "FizzBuzz", "31", "32", "Fizz", "34", "BuzzBang", "Fizz", "37", "38", "Fizz", "Buzz", "41", "FizzBang", "43", "44", "FizzBuzz", "46", "47", "Fizz", "Bang", "Buzz", "Fizz", "52", "53", "Fizz", "Buzz", "Bang", "Fizz", "58", "59", "FizzBuzz", "61", "62", "FizzBang", "64", "Buzz", "Fizz", "67", "68", "Fizz", "BuzzBang", "71", "Fizz", "73", "74", "FizzBuzz", "76", "Bang", "Fizz", "79", "Buzz", "Fizz", "82", "83", "FizzBang", "Buzz", "86", "Fizz", "88", "89", "FizzBuzz", "Bang", "92", "Fizz", "94", "Buzz", "Fizz", "97", "Bang", "Fizz", "Buzz", "101", "Fizz", "103", "104", "FizzBuzzBang"]}
+      ]
+    },
+    {
+      "id": 75,
+      "title": "Number Pyramid Pattern Generator",
+      "statement": "Generate a number pyramid pattern where each row contains consecutive numbers starting from 1. Row 1 has 1 number, row 2 has 2 numbers, etc. For example, height 4 creates: '1', '2 3', '4 5 6', '7 8 9 10'. Return a list of strings, each representing a row.",
+      "function_signature": "def number_pyramid(height):",
+      "categories": ["pattern_recognition", "mathematical_algorithms"],
+      "python_constructs": ["nested_loops", "counter_variables", "string_formatting"],
+      "hints": [
+        "Keep a running counter for consecutive numbers across all rows",
+        "For each row, generate the required number of consecutive numbers",
+        "Join numbers in each row with spaces to form strings"
+      ],
+      "solution": "def number_pyramid(height):\n    if height <= 0:\n        return []\n    \n    result = []\n    current_number = 1\n    \n    for row in range(1, height + 1):\n        row_numbers = []\n        \n        # Generate 'row' number of consecutive numbers\n        for _ in range(row):\n            row_numbers.append(str(current_number))\n            current_number += 1\n        \n        # Join numbers with spaces\n        result.append(' '.join(row_numbers))\n    \n    return result",
+      "test_cases": [
+        {"input": [4], "expected": ["1", "2 3", "4 5 6", "7 8 9 10"]},
+        {"input": [1], "expected": ["1"]},
+        {"input": [0], "expected": []},
+        {"input": [3], "expected": ["1", "2 3", "4 5 6"]},
+        {"input": [5], "expected": ["1", "2 3", "4 5 6", "7 8 9 10", "11 12 13 14 15"]}
+      ]
+    },
+    {
+      "id": 76,
+      "title": "Star Diamond Pattern Generator",
+      "statement": "Generate a diamond pattern using asterisks (*) with given height (must be odd). The diamond has a widest point in the middle and tapers to single stars at top and bottom. For height 5: ' * ', ' *** ', '*****', ' *** ', ' * '. Include proper spacing for alignment.",
+      "function_signature": "def star_diamond(height):",
+      "categories": ["pattern_recognition", "string_processing"],
+      "python_constructs": ["string_formatting", "mathematical_calculations", "pattern_generation"],
+      "hints": [
+        "Calculate spaces and stars for each row based on distance from middle",
+        "First half: increasing stars, decreasing spaces",
+        "Second half: decreasing stars, increasing spaces"
+      ],
+      "solution": "def star_diamond(height):\n    if height <= 0 or height % 2 == 0:\n        return []  # Height must be positive and odd\n    \n    result = []\n    middle = height // 2\n    \n    # Generate upper half including middle\n    for i in range(middle + 1):\n        spaces = ' ' * (middle - i)\n        stars = '*' * (2 * i + 1)\n        result.append(spaces + stars)\n    \n    # Generate lower half (excluding middle)\n    for i in range(middle - 1, -1, -1):\n        spaces = ' ' * (middle - i)\n        stars = '*' * (2 * i + 1)\n        result.append(spaces + stars)\n    \n    return result",
+      "test_cases": [
+        {"input": [5], "expected": ["  *", " ***", "*****", " ***", "  *"]},
+        {"input": [1], "expected": ["*"]},
+        {"input": [3], "expected": [" *", "***", " *"]},
+        {"input": [0], "expected": []},
+        {"input": [7], "expected": ["   *", "  ***", " *****", "*******", " *****", "  ***", "   *"]}
+      ]
+    },
+    {
+      "id": 77,
+      "title": "Arithmetic Progression Generator",
+      "statement": "Generate an arithmetic progression with given first term, common difference, and number of terms. An arithmetic progression is a sequence where consecutive terms have a constant difference. For example, first_term=3, difference=4, n=5 generates [3, 7, 11, 15, 19]. Include validation for edge cases.",
+      "function_signature": "def arithmetic_progression(first_term, difference, n):",
+      "categories": ["pattern_recognition", "mathematical_algorithms"],
+      "python_constructs": ["arithmetic_sequences", "list_generation", "mathematical_operations"],
+      "hints": [
+        "Each term equals first_term + (position - 1) * difference",
+        "Generate n terms using the arithmetic progression formula",
+        "Handle edge cases like n <= 0"
+      ],
+      "solution": "def arithmetic_progression(first_term, difference, n):\n    if n <= 0:\n        return []\n    \n    result = []\n    \n    for i in range(n):\n        term = first_term + i * difference\n        result.append(term)\n    \n    return result",
+      "test_cases": [
+        {"input": [3, 4, 5], "expected": [3, 7, 11, 15, 19]},
+        {"input": [1, 2, 0], "expected": []},
+        {"input": [10, -3, 4], "expected": [10, 7, 4, 1]},
+        {"input": [0, 1, 3], "expected": [0, 1, 2]},
+        {"input": [5, 0, 4], "expected": [5, 5, 5, 5]}
+      ]
+    },
+    {
+      "id": 78,
+      "title": "Geometric Progression Generator",
+      "statement": "Generate a geometric progression with given first term, common ratio, and number of terms. In a geometric progression, each term is found by multiplying the previous term by the ratio. For example, first_term=2, ratio=3, n=4 generates [2, 6, 18, 54]. Handle floating-point results appropriately.",
+      "function_signature": "def geometric_progression(first_term, ratio, n):",
+      "categories": ["pattern_recognition", "mathematical_algorithms"],
+      "python_constructs": ["geometric_sequences", "power_operations", "floating_point_arithmetic"],
+      "hints": [
+        "Each term equals first_term * (ratio ^ position)",
+        "Use power operation or iterative multiplication",
+        "Handle edge cases like n <= 0 or ratio = 0"
+      ],
+      "solution": "def geometric_progression(first_term, ratio, n):\n    if n <= 0:\n        return []\n    \n    if n == 1:\n        return [first_term]\n    \n    result = [first_term]\n    current_term = first_term\n    \n    for i in range(1, n):\n        current_term *= ratio\n        result.append(current_term)\n    \n    return result",
+      "test_cases": [
+        {"input": [2, 3, 4], "expected": [2, 6, 18, 54]},
+        {"input": [1, 2, 5], "expected": [1, 2, 4, 8, 16]},
+        {"input": [5, 0, 3], "expected": [5, 0, 0]},
+        {"input": [10, 1, 4], "expected": [10, 10, 10, 10]},
+        {"input": [3, -2, 4], "expected": [3, -6, 12, -24]}
+      ]
+    },
+    {
+      "id": 79,
+      "title": "Calendar Date Calculator",
+      "statement": "Calculate the day of the week for any given date using Zeller's congruence algorithm. Given year, month (1-12), and day, return the day of the week as a string. For example, January 1, 2000 was a Saturday. Handle leap years and month adjustments correctly.",
+      "function_signature": "def day_of_week(year, month, day):",
+      "categories": ["pattern_recognition", "mathematical_algorithms"],
+      "python_constructs": ["mathematical_formula", "modular_arithmetic", "date_calculations"],
+      "hints": [
+        "Use Zeller's congruence: h = (q + ⌊13(m+1)/5⌋ + K + ⌊K/4⌋ + ⌊J/4⌋ - 2J) mod 7",
+        "Adjust month and year for Zeller's algorithm (January/February count as months 13/14 of previous year)",
+        "Map result (0-6) to day names"
+      ],
+      "solution": "def day_of_week(year, month, day):\n    # Validate input\n    if month < 1 or month > 12 or day < 1 or day > 31:\n        return None\n    \n    # Zeller's congruence adjustments\n    # January and February are counted as months 13 and 14 of the previous year\n    if month < 3:\n        month += 12\n        year -= 1\n    \n    # Zeller's congruence formula\n    q = day\n    m = month\n    K = year % 100  # Year of the century\n    J = year // 100  # Zero-based century\n    \n    h = (q + ((13 * (m + 1)) // 5) + K + (K // 4) + (J // 4) - 2 * J) % 7\n    \n    # Convert to day names (Zeller's gives Saturday=0, Sunday=1, etc.)\n    days = ['Saturday', 'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']\n    \n    return days[h]",
+      "test_cases": [
+        {"input": [2000, 1, 1], "expected": "Saturday"},
+        {"input": [2023, 12, 25], "expected": "Monday"},
+        {"input": [1969, 7, 20], "expected": "Sunday"},
+        {"input": [2024, 2, 29], "expected": "Thursday"},
+        {"input": [1776, 7, 4], "expected": "Thursday"}
+      ]
+    },
+    {
+      "id": 80,
+      "title": "Next Number in Sequence Predictor",
+      "statement": "Given a sequence of numbers, predict the next number by identifying the pattern. Support arithmetic progressions (constant difference), geometric progressions (constant ratio), and quadratic sequences (second differences are constant). Return the next number or None if no pattern is found.",
+      "function_signature": "def next_in_sequence(sequence):",
+      "categories": ["pattern_recognition", "mathematical_algorithms"],
+      "python_constructs": ["pattern_analysis", "difference_calculation", "sequence_detection"],
+      "hints": [
+        "Check for arithmetic progression: constant first differences",
+        "Check for geometric progression: constant ratios (avoid division by zero)",
+        "Check for quadratic sequence: constant second differences"
+      ],
+      "solution": "def next_in_sequence(sequence):\n    if len(sequence) < 2:\n        return None\n    \n    # Check for arithmetic progression (constant difference)\n    if len(sequence) >= 2:\n        differences = [sequence[i+1] - sequence[i] for i in range(len(sequence)-1)]\n        if len(set(differences)) == 1:  # All differences are same\n            return sequence[-1] + differences[0]\n    \n    # Check for geometric progression (constant ratio)\n    if len(sequence) >= 2:\n        try:\n            ratios = []\n            for i in range(len(sequence)-1):\n                if sequence[i] != 0:\n                    ratios.append(sequence[i+1] / sequence[i])\n                else:\n                    break\n            \n            if len(ratios) == len(sequence)-1 and len(set(ratios)) == 1:\n                return sequence[-1] * ratios[0]\n        except (ZeroDivisionError, OverflowError):\n            pass\n    \n    # Check for quadratic sequence (constant second differences)\n    if len(sequence) >= 4:\n        first_diff = [sequence[i+1] - sequence[i] for i in range(len(sequence)-1)]\n        second_diff = [first_diff[i+1] - first_diff[i] for i in range(len(first_diff)-1)]\n        \n        if len(set(second_diff)) == 1:  # Constant second differences\n            next_first_diff = first_diff[-1] + second_diff[0]\n            return sequence[-1] + next_first_diff\n    \n    return None  # No pattern found",
+      "test_cases": [
+        {"input": [[2, 4, 6, 8]], "expected": 10},
+        {"input": [[1, 2, 4, 8]], "expected": 16},
+        {"input": [[1, 4, 9, 16]], "expected": 25},
+        {"input": [[3, 6, 11, 18]], "expected": 27},
+        {"input": [[1, 3, 2, 4]], "expected": null}
+      ]
+    },
+    {
+      "id": 81,
+      "title": "Pascal's Triangle Generator",
+      "statement": "Generate the first n rows of Pascal's triangle. Each row starts and ends with 1, and each interior number is the sum of the two numbers above it. For example, 4 rows: [[1], [1,1], [1,2,1], [1,3,3,1]]. Return a list of lists representing each row.",
+      "function_signature": "def pascals_triangle(n):",
+      "categories": ["pattern_recognition", "mathematical_algorithms"],
+      "python_constructs": ["nested_lists", "triangular_patterns", "combinatorial_mathematics"],
+      "hints": [
+        "First and last elements of each row are always 1",
+        "Interior elements are sum of two elements above: triangle[i][j] = triangle[i-1][j-1] + triangle[i-1][j]",
+        "Build each row based on the previous row"
+      ],
+      "solution": "def pascals_triangle(n):\n    if n <= 0:\n        return []\n    \n    triangle = []\n    \n    for i in range(n):\n        # Create new row\n        row = [1]  # First element is always 1\n        \n        # Calculate interior elements based on previous row\n        if i > 0:\n            prev_row = triangle[i-1]\n            for j in range(1, i):\n                row.append(prev_row[j-1] + prev_row[j])\n            \n            row.append(1)  # Last element is always 1\n        \n        triangle.append(row)\n    \n    return triangle",
+      "test_cases": [
+        {"input": [4], "expected": [[1], [1, 1], [1, 2, 1], [1, 3, 3, 1]]},
+        {"input": [1], "expected": [[1]]},
+        {"input": [0], "expected": []},
+        {"input": [5], "expected": [[1], [1, 1], [1, 2, 1], [1, 3, 3, 1], [1, 4, 6, 4, 1]]},
+        {"input": [6], "expected": [[1], [1, 1], [1, 2, 1], [1, 3, 3, 1], [1, 4, 6, 4, 1], [1, 5, 10, 10, 5, 1]]}
+      ]
+    },
+    {
+      "id": 82,
+      "title": "Spiral Matrix Traversal",
+      "statement": "Traverse a 2D matrix in spiral order (clockwise from outside to inside). For a 3x3 matrix [[1,2,3],[4,5,6],[7,8,9]], return [1,2,3,6,9,8,7,4,5]. Handle rectangular matrices and edge cases like single row/column matrices.",
+      "function_signature": "def spiral_traversal(matrix):",
+      "categories": ["pattern_recognition", "array_manipulation"],
+      "python_constructs": ["2d_array_traversal", "boundary_tracking", "directional_movement"],
+      "hints": [
+        "Track boundaries: top, bottom, left, right",
+        "Move in order: right → down → left → up",
+        "Shrink boundaries after completing each direction"
+      ],
+      "solution": "def spiral_traversal(matrix):\n    if not matrix or not matrix[0]:\n        return []\n    \n    result = []\n    top, bottom = 0, len(matrix) - 1\n    left, right = 0, len(matrix[0]) - 1\n    \n    while top <= bottom and left <= right:\n        # Traverse right\n        for col in range(left, right + 1):\n            result.append(matrix[top][col])\n        top += 1\n        \n        # Traverse down\n        for row in range(top, bottom + 1):\n            result.append(matrix[row][right])\n        right -= 1\n        \n        # Traverse left (if we still have rows)\n        if top <= bottom:\n            for col in range(right, left - 1, -1):\n                result.append(matrix[bottom][col])\n            bottom -= 1\n        \n        # Traverse up (if we still have columns)\n        if left <= right:\n            for row in range(bottom, top - 1, -1):\n                result.append(matrix[row][left])\n            left += 1\n    \n    return result",
+      "test_cases": [
+        {"input": [[[1, 2, 3], [4, 5, 6], [7, 8, 9]]], "expected": [1, 2, 3, 6, 9, 8, 7, 4, 5]},
+        {"input": [[[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12]]], "expected": [1, 2, 3, 4, 8, 12, 11, 10, 9, 5, 6, 7]},
+        {"input": [[[1]]], "expected": [1]},
+        {"input": [[[1, 2, 3]]], "expected": [1, 2, 3]},
+        {"input": [[[1], [2], [3]]], "expected": [1, 2, 3]}
+      ]
+    },
+    {
+      "id": 83,
+      "title": "String Permutation Generator",
+      "statement": "Generate all unique permutations of a given string. For string 'abc', return ['abc', 'acb', 'bac', 'bca', 'cab', 'cba']. Handle duplicate characters by returning only unique permutations. For 'aab', return ['aab', 'aba', 'baa']. Sort the result alphabetically.",
+      "function_signature": "def string_permutations(s):",
+      "categories": ["pattern_recognition", "combinatorics_and_counting"],
+      "python_constructs": ["recursive_generation", "backtracking", "set_operations"],
+      "hints": [
+        "Use recursive backtracking to generate permutations",
+        "Use a set to handle duplicate permutations",
+        "Sort final result alphabetically"
+      ],
+      "solution": "def string_permutations(s):\n    if not s:\n        return []\n    \n    def backtrack(path, remaining):\n        if not remaining:\n            permutations.add(''.join(path))\n            return\n        \n        for i in range(len(remaining)):\n            # Choose\n            char = remaining[i]\n            new_remaining = remaining[:i] + remaining[i+1:]\n            path.append(char)\n            \n            # Explore\n            backtrack(path, new_remaining)\n            \n            # Unchoose\n            path.pop()\n    \n    permutations = set()\n    backtrack([], s)\n    \n    return sorted(list(permutations))",
+      "test_cases": [
+        {"input": ["abc"], "expected": ["abc", "acb", "bac", "bca", "cab", "cba"]},
+        {"input": ["aab"], "expected": ["aab", "aba", "baa"]},
+        {"input": ["a"], "expected": ["a"]},
+        {"input": [""], "expected": []},
+        {"input": ["xyz"], "expected": ["xyz", "xzy", "yxz", "yzx", "zxy", "zyx"]}
+      ]
+    },
+    {
+      "id": 84,
+      "title": "Roman Numeral Pattern Converter",
+      "statement": "Convert integers to Roman numerals following traditional rules. Use standard symbols: I=1, V=5, X=10, L=50, C=100, D=500, M=1000. Handle subtractive cases: IV=4, IX=9, XL=40, XC=90, CD=400, CM=900. For example, 1994 becomes 'MCMXCIV'. Support numbers 1-3999.",
+      "function_signature": "def int_to_roman(num):",
+      "categories": ["pattern_recognition", "string_processing"],
+      "python_constructs": ["pattern_mapping", "string_building", "value_subtraction"],
+      "hints": [
+        "Create mapping of values to Roman symbols in descending order",
+        "Include subtractive combinations in the mapping",
+        "Process from largest to smallest values"
+      ],
+      "solution": "def int_to_roman(num):\n    if num <= 0 or num > 3999:\n        return None\n    \n    # Value-symbol pairs in descending order (including subtractive cases)\n    values = [\n        (1000, 'M'), (900, 'CM'), (500, 'D'), (400, 'CD'),\n        (100, 'C'), (90, 'XC'), (50, 'L'), (40, 'XL'),\n        (10, 'X'), (9, 'IX'), (5, 'V'), (4, 'IV'), (1, 'I')\n    ]\n    \n    result = ''\n    \n    for value, symbol in values:\n        count = num // value\n        if count:\n            result += symbol * count\n            num -= value * count\n    \n    return result",
+      "test_cases": [
+        {"input": [1994], "expected": "MCMXCIV"},
+        {"input": [58], "expected": "LVIII"},
+        {"input": [9], "expected": "IX"},
+        {"input": [3999], "expected": "MMMCMXCIX"},
+        {"input": [444], "expected": "CDXLIV"}
+      ]
+    },
+    {
+      "id": 85,
+      "title": "Morse Code Pattern Encoder",
+      "statement": "Convert text to Morse code using standard International Morse Code. Each letter/digit maps to dots (.) and dashes (-). Separate letters with spaces, words with ' / '. For example, 'HELLO WORLD' becomes '.... . .-.. .-.. --- / .-- --- .-. .-.. -..' . Handle only alphanumeric characters.",
+      "function_signature": "def text_to_morse(text):",
+      "categories": ["pattern_recognition", "string_processing"],
+      "python_constructs": ["dictionary_mapping", "string_transformation", "character_encoding"],
+      "hints": [
+        "Create dictionary mapping characters to Morse code patterns",
+        "Process each character and look up its Morse code",
+        "Use different separators for letters and words"
+      ],
+      "solution": "def text_to_morse(text):\n    # Morse code mapping\n    morse_map = {\n        'A': '.-', 'B': '-...', 'C': '-.-.', 'D': '-..', 'E': '.', 'F': '..-.',\n        'G': '--.', 'H': '....', 'I': '..', 'J': '.---', 'K': '-.-', 'L': '.-..',\n        'M': '--', 'N': '-.', 'O': '---', 'P': '.--.', 'Q': '--.-', 'R': '.-.',\n        'S': '...', 'T': '-', 'U': '..-', 'V': '...-', 'W': '.--', 'X': '-..-',\n        'Y': '-.--', 'Z': '--..', '0': '-----', '1': '.----', '2': '..---',\n        '3': '...--', '4': '....-', '5': '.....', '6': '-....', '7': '--...',\n        '8': '---..', '9': '----.'\n    }\n    \n    if not text:\n        return ''\n    \n    text = text.upper()\n    words = text.split()\n    morse_words = []\n    \n    for word in words:\n        morse_letters = []\n        for char in word:\n            if char in morse_map:\n                morse_letters.append(morse_map[char])\n        \n        if morse_letters:\n            morse_words.append(' '.join(morse_letters))\n    \n    return ' / '.join(morse_words)",
+      "test_cases": [
+        {"input": ["HELLO WORLD"], "expected": ".... . .-.. .-.. --- / .-- --- .-. .-.. -.."},
+        {"input": ["SOS"], "expected": "... --- ..."},
+        {"input": ["123"], "expected": ".---- ..--- ...--"},
+        {"input": [""], "expected": ""},
+        {"input": ["A"], "expected": ".-"}
+      ]
+    },
+    {
+      "id": 86,
+      "title": "Chess Knight Move Pattern",
+      "statement": "Generate all possible moves for a chess knight from a given position on an 8x8 board. A knight moves in an L-shape: 2 squares in one direction and 1 square perpendicular. From position (3,3), valid moves include (1,2), (1,4), (2,1), etc. Return list of valid positions as tuples, sorted by row then column.",
+      "function_signature": "def knight_moves(row, col):",
+      "categories": ["pattern_recognition", "game_algorithms"],
+      "python_constructs": ["coordinate_systems", "boundary_checking", "pattern_offsets"],
+      "hints": [
+        "Define 8 possible knight move offsets: (±2,±1) and (±1,±2)",
+        "Apply each offset to current position",
+        "Check if resulting position is within board boundaries (0-7)",
+      "solution": "def knight_moves(row, col):\n    # Check if starting position is valid\n    if not (0 <= row <= 7 and 0 <= col <= 7):\n        return []\n    \n    # All possible knight move offsets\n    moves = [\n        (-2, -1), (-2, 1), (-1, -2), (-1, 2),\n        (1, -2), (1, 2), (2, -1), (2, 1)\n    ]\n    \n    valid_moves = []\n    \n    for dr, dc in moves:\n        new_row = row + dr\n        new_col = col + dc\n        \n        # Check if new position is within board boundaries\n        if 0 <= new_row <= 7 and 0 <= new_col <= 7:\n            valid_moves.append((new_row, new_col))\n    \n    # Sort by row, then by column\n    return sorted(valid_moves)",
+      "test_cases": [
+        {"input": [3, 3], "expected": [(1, 2), (1, 4), (2, 1), (2, 5), (4, 1), (4, 5), (5, 2), (5, 4)]},
+        {"input": [0, 0], "expected": [(1, 2), (2, 1)]},
+        {"input": [7, 7], "expected": [(5, 6), (6, 5)]},
+        {"input": [4, 4], "expected": [(2, 3), (2, 5), (3, 2), (3, 6), (5, 2), (5, 6), (6, 3), (6, 5)]},
+        {"input": [8, 8], "expected": []}
+      ]
+    },
+    {
+      "id": 87,
+      "title": "Binary Pattern Generator",
+      "statement": "Generate all possible binary strings of length n where no two consecutive 1s appear. For n=3, valid strings are '000', '001', '010', '100', '101'. This follows the Fibonacci sequence pattern for counting valid strings. Return all valid binary strings sorted lexicographically.",
+      "function_signature": "def binary_no_consecutive_ones(n):",
+      "categories": ["pattern_recognition", "combinatorics_and_counting"],
+      "python_constructs": ["recursive_generation", "string_building", "constraint_satisfaction"],
+      "hints": [
+        "Use recursive backtracking to build binary strings",
+        "At each position, try '0' (always valid) and '1' (only if previous wasn't '1')",
+        "Sort result lexicographically before returning"
+      ],
+      "solution": "def binary_no_consecutive_ones(n):\n    if n <= 0:\n        return []\n    \n    def backtrack(current_string, last_char):\n        if len(current_string) == n:\n            result.append(current_string)\n            return\n        \n        # Always can add '0'\n        backtrack(current_string + '0', '0')\n        \n        # Can add '1' only if last character wasn't '1'\n        if last_char != '1':\n            backtrack(current_string + '1', '1')\n    \n    result = []\n    backtrack('', '')\n    \n    return sorted(result)",
+      "test_cases": [
+        {"input": [3], "expected": ["000", "001", "010", "100", "101"]},
+        {"input": [1], "expected": ["0", "1"]},
+        {"input": [2], "expected": ["00", "01", "10"]},
+        {"input": [4], "expected": ["0000", "0001", "0010", "0100", "0101", "1000", "1001", "1010"]},
+        {"input": [0], "expected": []}
+      ]
+    }
+  ]
+}

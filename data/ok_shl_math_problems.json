@@ -1,0 +1,319 @@
+{
+  "problems": [
+    {
+      "id": 31,
+      "title": "Sieve of Eratosthenes Prime Generator",
+      "statement": "Implement the Sieve of Eratosthenes algorithm to generate all prime numbers up to a given limit n. The algorithm should efficiently find all primes by iteratively marking multiples of each prime as composite. For example, given n=30, return [2, 3, 5, 7, 11, 13, 17, 19, 23, 29]. Handle edge cases where n < 2.",
+      "function_signature": "def sieve_of_eratosthenes(n):",
+      "categories": ["mathematical_algorithms", "optimization_problems"],
+      "python_constructs": ["boolean_array", "nested_loops", "list_comprehension"],
+      "hints": [
+        "Create a boolean array to track prime status of each number",
+        "Start with 2 and mark all its multiples as composite",
+        "Continue with the next unmarked number until you've processed all"
+      ],
+      "solution": "def sieve_of_eratosthenes(n):\n    if n < 2:\n        return []\n    \n    # Create boolean array, initially all True\n    is_prime = [True] * (n + 1)\n    is_prime[0] = is_prime[1] = False  # 0 and 1 are not prime\n    \n    # Sieve algorithm\n    for i in range(2, int(n**0.5) + 1):\n        if is_prime[i]:\n            # Mark all multiples of i as composite\n            for j in range(i * i, n + 1, i):\n                is_prime[j] = False\n    \n    # Collect all prime numbers\n    return [i for i in range(2, n + 1) if is_prime[i]]",
+      "test_cases": [
+        {"input": [30], "expected": [2, 3, 5, 7, 11, 13, 17, 19, 23, 29]},
+        {"input": [10], "expected": [2, 3, 5, 7]},
+        {"input": [2], "expected": [2]},
+        {"input": [1], "expected": []},
+        {"input": [50], "expected": [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47]}
+      ]
+    },
+    {
+      "id": 32,
+      "title": "Prime Number Checker",
+      "statement": "Write an efficient function to determine if a given number is prime. A prime number is a natural number greater than 1 that has no positive divisors other than 1 and itself. For example, 17 is prime, but 15 is not (divisible by 3 and 5). Optimize for numbers up to 10^6.",
+      "function_signature": "def is_prime(n):",
+      "categories": ["mathematical_algorithms", "optimization_problems"],
+      "python_constructs": ["mathematical_operations", "loop_optimization", "conditional_logic"],
+      "hints": [
+        "Handle edge cases: numbers less than 2 are not prime",
+        "Check divisibility up to the square root of n only",
+        "Skip even numbers after checking for 2"
+      ],
+      "solution": "def is_prime(n):\n    if not isinstance(n, int) or n < 2:\n        return False\n    \n    if n == 2:\n        return True\n    \n    if n % 2 == 0:\n        return False\n    \n    # Check odd divisors up to sqrt(n)\n    for i in range(3, int(n**0.5) + 1, 2):\n        if n % i == 0:\n            return False\n    \n    return True",
+      "test_cases": [
+        {"input": [17], "expected": true},
+        {"input": [15], "expected": false},
+        {"input": [2], "expected": true},
+        {"input": [1], "expected": false},
+        {"input": [97], "expected": true}
+      ]
+    },
+    {
+      "id": 33,
+      "title": "Fibonacci Number Calculator",
+      "statement": "Calculate the nth Fibonacci number efficiently. The Fibonacci sequence starts with 0, 1, and each subsequent number is the sum of the two preceding ones: 0, 1, 1, 2, 3, 5, 8, 13, ... For example, fibonacci(7) = 13. Use an iterative approach for better performance and handle n=0 and n=1 correctly.",
+      "function_signature": "def fibonacci(n):",
+      "categories": ["mathematical_algorithms", "optimization_problems"],
+      "python_constructs": ["iterative_approach", "variable_swapping", "mathematical_sequence"],
+      "hints": [
+        "Use iterative approach instead of recursion for efficiency",
+        "Keep track of only the last two Fibonacci numbers",
+        "Handle base cases n=0 and n=1 explicitly"
+      ],
+      "solution": "def fibonacci(n):\n    if not isinstance(n, int) or n < 0:\n        return None\n    \n    if n == 0:\n        return 0\n    if n == 1:\n        return 1\n    \n    # Iterative approach\n    prev, curr = 0, 1\n    \n    for i in range(2, n + 1):\n        prev, curr = curr, prev + curr\n    \n    return curr",
+      "test_cases": [
+        {"input": [7], "expected": 13},
+        {"input": [0], "expected": 0},
+        {"input": [1], "expected": 1},
+        {"input": [10], "expected": 55},
+        {"input": [15], "expected": 610}
+      ]
+    },
+    {
+      "id": 34,
+      "title": "Greatest Common Divisor and Least Common Multiple",
+      "statement": "Write a function that calculates both GCD (Greatest Common Divisor) and LCM (Least Common Multiple) of two positive integers. Use the Euclidean algorithm for GCD and the relationship LCM(a,b) = (a*b)/GCD(a,b). Return a tuple (gcd, lcm). For example, gcd_lcm(12, 18) should return (6, 36).",
+      "function_signature": "def gcd_lcm(a, b):",
+      "categories": ["mathematical_algorithms", "number_theory"],
+      "python_constructs": ["euclidean_algorithm", "tuple_return", "mathematical_operations"],
+      "hints": [
+        "Implement Euclidean algorithm: gcd(a,b) = gcd(b, a%b)",
+        "Use the mathematical relationship: LCM(a,b) = (a*b)/GCD(a,b)",
+        "Handle the case where one or both numbers are zero"
+      ],
+      "solution": "def gcd_lcm(a, b):\n    if not isinstance(a, int) or not isinstance(b, int):\n        return None\n    \n    # Handle negative numbers\n    a, b = abs(a), abs(b)\n    \n    if a == 0 and b == 0:\n        return [0, 0]\n    if a == 0:\n        return [b, 0]\n    if b == 0:\n        return [a, 0]\n    \n    # Euclidean algorithm for GCD\n    def gcd(x, y):\n        while y:\n            x, y = y, x % y\n        return x\n    \n    g = gcd(a, b)\n    l = (a * b) // g\n    \n    return [g, l]",
+      "test_cases": [
+        {"input": [12, 18], "expected": [6, 36]},
+        {"input": [7, 13], "expected": [1, 91]},
+        {"input": [0, 5], "expected": [5, 0]},
+        {"input": [15, 25], "expected": [5, 75]},
+        {"input": [17, 19], "expected": [1, 323]}
+      ]
+    },
+    {
+      "id": 35,
+      "title": "Digital Root Calculator",
+      "statement": "Calculate the digital root of a number by repeatedly summing its digits until a single digit is obtained. For example, 9875 → 9+8+7+5 = 29 → 2+9 = 11 → 1+1 = 2. The digital root is 2. Handle negative numbers by working with their absolute value. There's also a mathematical formula: digital_root = 1 + (n-1) % 9 for positive n.",
+      "function_signature": "def digital_root(n):",
+      "categories": ["mathematical_algorithms", "number_theory"],
+      "python_constructs": ["mathematical_formula", "digit_manipulation", "modulo_arithmetic"],
+      "hints": [
+        "Use the mathematical formula: 1 + (n-1) % 9 for efficiency",
+        "Handle special cases: n = 0 should return 0",
+        "Work with absolute value for negative numbers"
+      ],
+      "solution": "def digital_root(n):\n    if not isinstance(n, int):\n        return None\n    \n    n = abs(n)\n    \n    if n == 0:\n        return 0\n    \n    # Mathematical formula for digital root\n    return 1 + (n - 1) % 9",
+      "test_cases": [
+        {"input": [9875], "expected": 2},
+        {"input": [123], "expected": 6},
+        {"input": [0], "expected": 0},
+        {"input": [9], "expected": 9},
+        {"input": [-456], "expected": 6}
+      ]
+    },
+    {
+      "id": 36,
+      "title": "Number Base Converter",
+      "statement": "Convert a number from one base to another. The function should take a number string in the source base and convert it to the target base. Support bases 2-36, using digits 0-9 and letters A-Z for values 10-35. For example, convert '1010' from base 2 to base 10 should return '10'. Handle invalid inputs gracefully.",
+      "function_signature": "def convert_base(number, from_base, to_base):",
+      "categories": ["mathematical_algorithms", "string_processing"],
+      "python_constructs": ["base_conversion", "string_manipulation", "mathematical_operations"],
+      "hints": [
+        "First convert from source base to decimal (base 10)",
+        "Then convert from decimal to target base",
+        "Use character mapping for bases > 10 (A=10, B=11, etc.)"
+      ],
+      "solution": "def convert_base(number, from_base, to_base):\n    if not isinstance(number, str) or not number:\n        return None\n    \n    if not (2 <= from_base <= 36 and 2 <= to_base <= 36):\n        return None\n    \n    # Character to value mapping\n    def char_to_val(c):\n        if '0' <= c <= '9':\n            return ord(c) - ord('0')\n        elif 'A' <= c.upper() <= 'Z':\n            return ord(c.upper()) - ord('A') + 10\n        return -1\n    \n    # Value to character mapping\n    def val_to_char(v):\n        if 0 <= v <= 9:\n            return str(v)\n        elif 10 <= v <= 35:\n            return chr(ord('A') + v - 10)\n        return None\n    \n    # Convert from source base to decimal\n    decimal_value = 0\n    number = number.upper()\n    \n    for char in number:\n        digit_val = char_to_val(char)\n        if digit_val == -1 or digit_val >= from_base:\n            return None  # Invalid digit for this base\n        decimal_value = decimal_value * from_base + digit_val\n    \n    # Convert from decimal to target base\n    if decimal_value == 0:\n        return '0'\n    \n    result = ''\n    while decimal_value > 0:\n        remainder = decimal_value % to_base\n        result = val_to_char(remainder) + result\n        decimal_value //= to_base\n    \n    return result",
+      "test_cases": [
+        {"input": ["1010", 2, 10], "expected": "10"},
+        {"input": ["FF", 16, 10], "expected": "255"},
+        {"input": ["255", 10, 16], "expected": "FF"},
+        {"input": ["0", 10, 2], "expected": "0"},
+        {"input": ["123", 8, 10], "expected": "83"}
+      ]
+    },
+    {
+      "id": 37,
+      "title": "Perfect Number Classifier",
+      "statement": "Determine if a number is perfect, abundant, or deficient. A perfect number equals the sum of its proper divisors (divisors excluding the number itself). An abundant number is less than the sum of its proper divisors. A deficient number is greater than the sum of its proper divisors. For example, 6 is perfect (1+2+3=6), 12 is abundant (1+2+3+4+6=16>12), 8 is deficient (1+2+4=7<8).",
+      "function_signature": "def classify_number(n):",
+      "categories": ["mathematical_algorithms", "number_theory"],
+      "python_constructs": ["divisor_calculation", "mathematical_classification", "optimization"],
+      "hints": [
+        "Find all proper divisors by checking numbers up to sqrt(n)",
+        "For each divisor i, also include n/i if it's different from i",
+        "Compare sum of divisors with the original number"
+      ],
+      "solution": "def classify_number(n):\n    if not isinstance(n, int) or n <= 0:\n        return None\n    \n    if n == 1:\n        return 'deficient'\n    \n    # Find sum of proper divisors\n    divisor_sum = 1  # 1 is always a proper divisor for n > 1\n    \n    # Check divisors up to sqrt(n)\n    for i in range(2, int(n**0.5) + 1):\n        if n % i == 0:\n            divisor_sum += i\n            # Add the corresponding divisor if it's different\n            if i != n // i:\n                divisor_sum += n // i\n    \n    # Classify the number\n    if divisor_sum == n:\n        return 'perfect'\n    elif divisor_sum > n:\n        return 'abundant'\n    else:\n        return 'deficient'",
+      "test_cases": [
+        {"input": [6], "expected": "perfect"},
+        {"input": [12], "expected": "abundant"},
+        {"input": [8], "expected": "deficient"},
+        {"input": [28], "expected": "perfect"},
+        {"input": [1], "expected": "deficient"}
+      ]
+    },
+    {
+      "id": 38,
+      "title": "Factorial Calculator with Optimization",
+      "statement": "Calculate the factorial of a non-negative integer n (n!). Implement both iterative and recursive approaches, but return the iterative result for efficiency. Handle large numbers appropriately and edge cases like 0! = 1. For example, factorial(5) = 120. Return None for negative inputs.",
+      "function_signature": "def factorial(n):",
+      "categories": ["mathematical_algorithms", "optimization_problems"],
+      "python_constructs": ["iterative_calculation", "mathematical_operations", "edge_case_handling"],
+      "hints": [
+        "Use iterative approach to avoid stack overflow for large numbers",
+        "Handle the special case: 0! = 1",
+        "Return None for invalid inputs (negative numbers)"
+      ],
+      "solution": "def factorial(n):\n    if not isinstance(n, int) or n < 0:\n        return None\n    \n    if n == 0 or n == 1:\n        return 1\n    \n    # Iterative calculation\n    result = 1\n    for i in range(2, n + 1):\n        result *= i\n    \n    return result",
+      "test_cases": [
+        {"input": [5], "expected": 120},
+        {"input": [0], "expected": 1},
+        {"input": [1], "expected": 1},
+        {"input": [10], "expected": 3628800},
+        {"input": [-1], "expected": null}
+      ]
+    },
+    {
+      "id": 39,
+      "title": "Integer Square Root Calculator",
+      "statement": "Calculate the integer square root of a non-negative integer without using the built-in sqrt function. Return the largest integer whose square is less than or equal to the given number. For example, int_sqrt(8) = 2 because 2² = 4 ≤ 8 < 3² = 9. Use binary search for efficiency.",
+      "function_signature": "def integer_sqrt(n):",
+      "categories": ["mathematical_algorithms", "search_and_sort"],
+      "python_constructs": ["binary_search", "mathematical_operations", "optimization"],
+      "hints": [
+        "Use binary search between 0 and n to find the answer",
+        "For each mid value, check if mid² ≤ n < (mid+1)²",
+        "Optimize the upper bound to n//2 + 1 for larger numbers"
+      ],
+      "solution": "def integer_sqrt(n):\n    if not isinstance(n, int) or n < 0:\n        return None\n    \n    if n == 0 or n == 1:\n        return n\n    \n    # Binary search for the square root\n    left, right = 1, n // 2 + 1\n    \n    while left <= right:\n        mid = (left + right) // 2\n        square = mid * mid\n        \n        if square == n:\n            return mid\n        elif square < n:\n            # Check if this is the answer\n            if (mid + 1) * (mid + 1) > n:\n                return mid\n            left = mid + 1\n        else:\n            right = mid - 1\n    \n    return right",
+      "test_cases": [
+        {"input": [8], "expected": 2},
+        {"input": [16], "expected": 4},
+        {"input": [15], "expected": 3},
+        {"input": [0], "expected": 0},
+        {"input": [1], "expected": 1}
+      ]
+    },
+    {
+      "id": 40,
+      "title": "Armstrong Number Verification",
+      "statement": "Check if a number is an Armstrong number (also known as narcissistic number). An Armstrong number is equal to the sum of its digits each raised to the power of the number of digits. For example, 153 is Armstrong because 1³ + 5³ + 3³ = 1 + 125 + 27 = 153. Similarly, 9474 is Armstrong: 9⁴ + 4⁴ + 7⁴ + 4⁴ = 6561 + 256 + 2401 + 256 = 9474.",
+      "function_signature": "def is_armstrong_number(n):",
+      "categories": ["mathematical_algorithms", "number_theory"],
+      "python_constructs": ["digit_extraction", "power_calculation", "mathematical_verification"],
+      "hints": [
+        "Extract individual digits from the number",
+        "Count the total number of digits",
+        "Calculate sum of each digit raised to the power of digit count"
+      ],
+      "solution": "def is_armstrong_number(n):\n    if not isinstance(n, int) or n < 0:\n        return False\n    \n    # Convert to string to easily extract digits\n    str_n = str(n)\n    num_digits = len(str_n)\n    \n    # Calculate sum of digits raised to power of number of digits\n    digit_sum = sum(int(digit) ** num_digits for digit in str_n)\n    \n    return digit_sum == n",
+      "test_cases": [
+        {"input": [153], "expected": true},
+        {"input": [9474], "expected": true},
+        {"input": [123], "expected": false},
+        {"input": [0], "expected": true},
+        {"input": [371], "expected": true}
+      ]
+    },
+    {
+      "id": 41,
+      "title": "Collatz Conjecture Sequence Length",
+      "statement": "Calculate the length of the Collatz sequence for a given positive integer. The Collatz sequence follows these rules: if n is even, divide by 2; if n is odd, multiply by 3 and add 1. Continue until reaching 1. For example, starting with 13: 13→40→20→10→5→16→8→4→2→1 (length = 10). The conjecture states this sequence always reaches 1.",
+      "function_signature": "def collatz_length(n):",
+      "categories": ["mathematical_algorithms", "sequence_analysis"],
+      "python_constructs": ["iterative_calculation", "conditional_logic", "sequence_generation"],
+      "hints": [
+        "Apply the Collatz rules iteratively until reaching 1",
+        "Count each step in the sequence",
+        "Handle the termination condition when n becomes 1"
+      ],
+      "solution": "def collatz_length(n):\n    if not isinstance(n, int) or n <= 0:\n        return None\n    \n    length = 0\n    \n    while n != 1:\n        if n % 2 == 0:\n            n = n // 2\n        else:\n            n = 3 * n + 1\n        length += 1\n    \n    return length",
+      "test_cases": [
+        {"input": [13], "expected": 9},
+        {"input": [1], "expected": 0},
+        {"input": [2], "expected": 1},
+        {"input": [7], "expected": 16},
+        {"input": [27], "expected": 111}
+      ]
+    },
+    {
+      "id": 42,
+      "title": "Prime Factorization",
+      "statement": "Find the prime factorization of a positive integer and return it as a list of prime factors in ascending order (with repetition for powers). For example, 60 = 2² × 3 × 5, so return [2, 2, 3, 5]. For prime numbers, return a list with the number itself. Handle edge cases like 1 (return empty list).",
+      "function_signature": "def prime_factorization(n):",
+      "categories": ["mathematical_algorithms", "number_theory"],
+      "python_constructs": ["factor_extraction", "division_algorithm", "list_building"],
+      "hints": [
+        "Start with the smallest prime (2) and divide while possible",
+        "Continue with odd numbers starting from 3",
+        "Stop when the remaining number becomes 1 or when factor > sqrt(n)"
+      ],
+      "solution": "def prime_factorization(n):\n    if not isinstance(n, int) or n <= 0:\n        return None\n    \n    if n == 1:\n        return []\n    \n    factors = []\n    \n    # Check for factor 2\n    while n % 2 == 0:\n        factors.append(2)\n        n //= 2\n    \n    # Check for odd factors starting from 3\n    factor = 3\n    while factor * factor <= n:\n        while n % factor == 0:\n            factors.append(factor)\n            n //= factor\n        factor += 2\n    \n    # If n is still > 1, then it's a prime factor\n    if n > 1:\n        factors.append(n)\n    \n    return factors",
+      "test_cases": [
+        {"input": [60], "expected": [2, 2, 3, 5]},
+        {"input": [17], "expected": [17]},
+        {"input": [1], "expected": []},
+        {"input": [100], "expected": [2, 2, 5, 5]},
+        {"input": [97], "expected": [97]}
+      ]
+    },
+    {
+      "id": 43,
+      "title": "Modular Exponentiation",
+      "statement": "Calculate (base^exponent) mod modulus efficiently for large numbers. This is crucial in cryptography and number theory. Use the binary exponentiation method to avoid overflow and improve performance. For example, pow_mod(2, 10, 1000) = 1024 mod 1000 = 24. Handle edge cases like exponent = 0.",
+      "function_signature": "def modular_power(base, exponent, modulus):",
+      "categories": ["mathematical_algorithms", "optimization_problems"],
+      "python_constructs": ["binary_exponentiation", "modular_arithmetic", "bit_manipulation"],
+      "hints": [
+        "Use binary exponentiation: repeatedly square the base and halve the exponent",
+        "Apply modulus at each step to prevent overflow",
+        "Handle the case when exponent is odd by multiplying result by current base"
+      ],
+      "solution": "def modular_power(base, exponent, modulus):\n    if not all(isinstance(x, int) for x in [base, exponent, modulus]):\n        return None\n    \n    if modulus <= 0:\n        return None\n    \n    if exponent < 0:\n        return None\n    \n    if exponent == 0:\n        return 1 % modulus\n    \n    result = 1\n    base = base % modulus\n    \n    while exponent > 0:\n        # If exponent is odd, multiply base with result\n        if exponent % 2 == 1:\n            result = (result * base) % modulus\n        \n        # Square the base and halve the exponent\n        exponent = exponent >> 1  # Equivalent to exponent // 2\n        base = (base * base) % modulus\n    \n    return result",
+      "test_cases": [
+        {"input": [2, 10, 1000], "expected": 24},
+        {"input": [3, 4, 5], "expected": 1},
+        {"input": [2, 0, 5], "expected": 1},
+        {"input": [10, 3, 7], "expected": 6},
+        {"input": [123, 456, 789], "expected": 699}
+      ]
+    },
+    {
+      "id": 44,
+      "title": "Number of Divisors Calculator",
+      "statement": "Count the total number of positive divisors (factors) of a given positive integer. For example, 12 has divisors [1, 2, 3, 4, 6, 12], so the count is 6. Use an efficient algorithm that only checks up to the square root of the number. Handle perfect squares correctly.",
+      "function_signature": "def count_divisors(n):",
+      "categories": ["mathematical_algorithms", "number_theory"],
+      "python_constructs": ["divisor_counting", "square_root_optimization", "mathematical_optimization"],
+      "hints": [
+        "Check divisors only up to sqrt(n) for efficiency",
+        "For each divisor i found, there's also a corresponding divisor n/i",
+        "Be careful with perfect squares to avoid double-counting the square root"
+      ],
+      "solution": "def count_divisors(n):\n    if not isinstance(n, int) or n <= 0:\n        return None\n    \n    if n == 1:\n        return 1\n    \n    count = 0\n    sqrt_n = int(n**0.5)\n    \n    for i in range(1, sqrt_n + 1):\n        if n % i == 0:\n            if i * i == n:\n                # Perfect square case: count the square root once\n                count += 1\n            else:\n                # Count both i and n/i\n                count += 2\n    \n    return count",
+      "test_cases": [
+        {"input": [12], "expected": 6},
+        {"input": [16], "expected": 5},
+        {"input": [1], "expected": 1},
+        {"input": [7], "expected": 2},
+        {"input": [36], "expected": 9}
+      ]
+    },
+    {
+      "id": 45,
+      "title": "Mathematical Expression Evaluator",
+      "statement": "Evaluate a mathematical expression given as a string containing integers and the operators +, -, *, /. Follow standard operator precedence (*, / before +, -) and handle parentheses. For example, '2 + 3 * 4' should return 14, and '(2 + 3) * 4' should return 20. Handle division by zero gracefully.",
+      "function_signature": "def evaluate_expression(expression):",
+      "categories": ["mathematical_algorithms", "string_processing", "data_structure_fundamentals"],
+      "python_constructs": ["stack_operations", "operator_precedence", "expression_parsing"],
+      "hints": [
+        "Use the shunting-yard algorithm or recursive descent parser",
+        "Handle operator precedence: *, / have higher precedence than +, -",
+        "Use stacks to manage operators and operands"
+      ],
+      "solution": "def evaluate_expression(expression):\n    if not expression or not isinstance(expression, str):\n        return None\n    \n    # Remove spaces\n    expression = expression.replace(' ', '')\n    \n    def precedence(op):\n        return 2 if op in '*/' else 1\n    \n    def apply_operator(operators, operands):\n        if len(operands) < 2 or not operators:\n            return False\n        \n        b = operands.pop()\n        a = operands.pop()\n        op = operators.pop()\n        \n        if op == '+':\n            operands.append(a + b)\n        elif op == '-':\n            operands.append(a - b)\n        elif op == '*':\n            operands.append(a * b)\n        elif op == '/':\n            if b == 0:\n                return False  # Division by zero\n            operands.append(a / b)\n        \n        return True\n    \n    operators = []\n    operands = []\n    i = 0\n    \n    while i < len(expression):\n        char = expression[i]\n        \n        if char.isdigit():\n            # Parse number\n            num = 0\n            while i < len(expression) and expression[i].isdigit():\n                num = num * 10 + int(expression[i])\n                i += 1\n            operands.append(num)\n            continue\n        \n        elif char == '(':\n            operators.append(char)\n        \n        elif char == ')':\n            while operators and operators[-1] != '(':\n                if not apply_operator(operators, operands):\n                    return None\n            if operators:\n                operators.pop()  # Remove '('\n        \n        elif char in '+-*/':\n            while (operators and operators[-1] != '(' and\n                   precedence(operators[-1]) >= precedence(char)):\n                if not apply_operator(operators, operands):\n                    return None\n            operators.append(char)\n        \n        i += 1\n    \n    # Apply remaining operators\n    while operators:\n        if not apply_operator(operators, operands):\n            return None\n    \n    return operands[0] if len(operands) == 1 else None",
+      "test_cases": [
+        {"input": ["2 + 3 * 4"], "expected": 14},
+        {"input": ["(2 + 3) * 4"], "expected": 20},
+        {"input": ["10 / 2 - 3"], "expected": 2.0},
+        {"input": ["1 + 2 * 3 - 4"], "expected": 3},
+        {"input": ["8 / 2 / 2"], "expected": 2.0}
+      ]
+    }
+  ]
+}

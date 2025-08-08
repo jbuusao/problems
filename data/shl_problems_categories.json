@@ -1,0 +1,239 @@
+{
+  "shl_coding_simulation_categories": {
+    "array_manipulation": {
+      "description": "Problems involving array operations, transformations, and analysis",
+      "typical_problems": [
+        "Rotate array left/right by k positions",
+        "Find missing number in sequence",
+        "Find duplicate elements in array",
+        "Merge two sorted arrays",
+        "Maximum subarray sum (Kadane's algorithm)",
+        "Array partitioning (even/odd, positive/negative)",
+        "Remove duplicates from sorted array",
+        "Find intersection of two arrays",
+        "Move zeros to end of array",
+        "Find second largest element"
+      ],
+      "difficulty": "Easy to Medium",
+      "time_estimate": "10-20 minutes"
+    },
+    "string_processing": {
+      "description": "String manipulation, analysis, and transformation problems",
+      "typical_problems": [
+        "Check if string is palindrome",
+        "Check if two strings are anagrams",
+        "Reverse words in a string",
+        "Find first non-repeating character",
+        "Count character frequencies",
+        "String compression (aaabbc -> a3b2c1)",
+        "Remove duplicate characters",
+        "Find longest common prefix",
+        "Valid email/phone number format",
+        "String pattern matching"
+      ],
+      "difficulty": "Easy to Medium",
+      "time_estimate": "8-18 minutes"
+    },
+    "mathematical_algorithms": {
+      "description": "Number theory, calculations, and mathematical problem solving",
+      "typical_problems": [
+        "Generate prime numbers (Sieve of Eratosthenes)",
+        "Check if number is prime",
+        "Calculate nth Fibonacci number",
+        "Find GCD/LCM of two numbers",
+        "Sum of digits until single digit",
+        "Convert number to different base",
+        "Check if number is perfect/abundant/deficient",
+        "Calculate factorial (iterative/recursive)",
+        "Find square root without library",
+        "Armstrong number verification"
+      ],
+      "difficulty": "Easy to Medium",
+      "time_estimate": "8-15 minutes"
+    },
+    "data_structure_fundamentals": {
+      "description": "Basic data structure operations and implementations",
+      "typical_problems": [
+        "Valid parentheses/brackets checker",
+        "Implement stack using arrays",
+        "Implement queue using arrays",
+        "Reverse string using stack",
+        "Binary tree traversal (inorder, preorder, postorder)",
+        "Find height of binary tree",
+        "Implement hash table operations",
+        "Linked list operations (insert, delete, reverse)",
+        "Stack-based expression evaluation",
+        "Queue-based BFS implementation"
+      ],
+      "difficulty": "Medium",
+      "time_estimate": "15-25 minutes"
+    },
+    "search_and_sort": {
+      "description": "Searching, sorting algorithms and related operations",
+      "typical_problems": [
+        "Binary search implementation",
+        "Find element in rotated sorted array",
+        "Bubble sort implementation",
+        "Selection sort implementation",
+        "Insertion sort implementation",
+        "Find kth largest element",
+        "Merge sort implementation",
+        "Quick sort implementation",
+        "Count inversions in array",
+        "Search in 2D matrix"
+      ],
+      "difficulty": "Easy to Hard",
+      "time_estimate": "10-25 minutes"
+    },
+    "pattern_recognition": {
+      "description": "Problems involving patterns, sequences, and logical progressions",
+      "typical_problems": [
+        "FizzBuzz (print Fizz for multiples of 3, Buzz for 5)",
+        "FizzBuzzBang with multiple conditions",
+        "Print number pyramid patterns",
+        "Print star/diamond patterns",
+        "Generate arithmetic/geometric progressions",
+        "Calendar date calculations",
+        "Find next number in sequence",
+        "Pascal's triangle generation",
+        "Spiral matrix traversal",
+        "Generate permutations of string"
+      ],
+      "difficulty": "Easy to Medium",
+      "time_estimate": "8-18 minutes"
+    },
+    "logic_and_conditional": {
+      "description": "Business logic, decision making, and conditional processing",
+      "typical_problems": [
+        "Grade calculator based on scores",
+        "Tax calculation with brackets",
+        "Age calculator from birth date",
+        "Discount calculation system",
+        "Unit converter (temperature, length, weight)",
+        "Leap year determination",
+        "Working days calculator",
+        "Salary calculation with overtime",
+        "BMI calculator with categories",
+        "Loan interest calculator"
+      ],
+      "difficulty": "Easy",
+      "time_estimate": "5-12 minutes"
+    },
+    "graph_theory_basic": {
+      "description": "Simple graph problems and pathfinding",
+      "typical_problems": [
+        "Find path in 2D grid",
+        "Count connected components in grid",
+        "Calculate distance between two points",
+        "Simple maze solver",
+        "Find shortest path in unweighted graph",
+        "Check if graph is connected",
+        "Find all paths between two nodes",
+        "Island counting problem",
+        "Snake and ladder problem",
+        "Knight's tour on chessboard"
+      ],
+      "difficulty": "Medium to Hard",
+      "time_estimate": "20-30 minutes"
+    },
+    "combinatorics_and_counting": {
+      "description": "Counting problems, permutations, combinations, and probability",
+      "typical_problems": [
+        "Calculate nCr (combinations)",
+        "Calculate nPr (permutations)",
+        "Generate all permutations of array",
+        "Generate all combinations of array",
+        "Count ways to climb stairs (1 or 2 steps)",
+        "Coin change problem (count ways)",
+        "Count paths in grid",
+        "Calculate probability of events",
+        "Count anagrams of a word",
+        "Count unique paths with obstacles"
+      ],
+      "difficulty": "Medium",
+      "time_estimate": "15-25 minutes"
+    },
+    "input_output_processing": {
+      "description": "Data parsing, file processing, and format conversion",
+      "typical_problems": [
+        "Parse CSV file and extract data",
+        "Read file and count words/lines",
+        "JSON parsing and data extraction",
+        "Command line argument processing",
+        "Data validation (email, phone, credit card)",
+        "Convert between data formats",
+        "Process log files for patterns",
+        "Calculate statistics from data file",
+        "Filter and sort tabular data",
+        "Generate reports from raw data"
+      ],
+      "difficulty": "Easy to Medium",
+      "time_estimate": "10-20 minutes"
+    },
+    "optimization_problems": {
+      "description": "Problems requiring optimal solutions and algorithm efficiency",
+      "typical_problems": [
+        "Knapsack problem (0/1 variant)",
+        "Job scheduling with deadlines",
+        "Activity selection problem",
+        "Fractional knapsack",
+        "Minimum spanning tree",
+        "Coin change (minimum coins)",
+        "Longest increasing subsequence",
+        "Maximum profit stock trading",
+        "Task scheduling optimization",
+        "Resource allocation problems"
+      ],
+      "difficulty": "Hard",
+      "time_estimate": "20-35 minutes"
+    },
+    "bit_manipulation": {
+      "description": "Binary operations and bit-level problem solving",
+      "typical_problems": [
+        "Check if number is power of 2",
+        "Count number of 1s in binary",
+        "Find single number in array of pairs",
+        "Swap two numbers without temp variable",
+        "Find missing number using XOR",
+        "Toggle specific bits in number",
+        "Check if bit is set at position",
+        "Convert binary to decimal and vice versa",
+        "Find two non-repeating numbers",
+        "Reverse bits of a number"
+      ],
+      "difficulty": "Medium",
+      "time_estimate": "12-20 minutes"
+    }
+  },
+  "difficulty_levels": {
+    "easy": {
+      "time_range": "5-12 minutes",
+      "description": "Basic programming constructs, simple logic",
+      "examples": ["FizzBuzz", "Palindrome check", "Sum calculations"]
+    },
+    "medium": {
+      "time_range": "12-20 minutes", 
+      "description": "Algorithm implementation, data structure usage",
+      "examples": ["Binary search", "Stack operations", "Array rotation"]
+    },
+    "hard": {
+      "time_range": "20-30 minutes",
+      "description": "Complex algorithms, optimization, multiple steps",
+      "examples": ["Dynamic programming", "Graph algorithms", "Advanced sorting"]
+    }
+  },
+  "assessment_tips": {
+    "time_management": "Allocate ~20 minutes per problem with 5 minute buffer",
+    "edge_cases": "Always test with empty inputs, single elements, boundary values",
+    "optimization": "Focus on O(n) or O(n log n) solutions when possible",
+    "testing": "Verify with sample inputs before submitting",
+    "common_mistakes": ["Off-by-one errors", "Not handling edge cases", "Inefficient nested loops"]
+  },
+  "languages_commonly_used": [
+    "Python",
+    "Java", 
+    "JavaScript",
+    "C++",
+    "C#"
+  ]
+}

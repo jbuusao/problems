@@ -1,0 +1,214 @@
+{
+  "problems": [
+    {
+      "id": 1,
+      "title": "Rotate Array Left by K Positions",
+      "statement": "Given an array of integers and a number k, rotate the array to the left by k positions. For example, if array = [1, 2, 3, 4, 5] and k = 2, the result should be [3, 4, 5, 1, 2]. Handle cases where k is larger than the array length by using modulo operation.",
+      "function_signature": "def rotate_array_left(arr, k):",
+      "categories": ["array_manipulation", "algorithm_implementation"],
+      "python_constructs": ["list_slicing", "modulo_operator", "list_concatenation", "len_function"],
+      "hints": [
+        "Think about how array slicing can help you split the array at the rotation point",
+        "Use modulo (%) to handle cases where k is larger than array length",
+        "Consider concatenating two slices: elements from position k onwards, followed by elements from start to position k"
+      ],
+      "solution": "def rotate_array_left(arr, k):\n    if not arr or k == 0:\n        return arr[:]\n    \n    n = len(arr)\n    k = k % n  # Handle k larger than array length\n    \n    # Split array at position k and concatenate\n    return arr[k:] + arr[:k]",
+      "test_cases": [
+        {"input": [[1, 2, 3, 4, 5], 2], "expected": [3, 4, 5, 1, 2]},
+        {"input": [[], 3], "expected": []},
+        {"input": [[1], 5], "expected": [1]},
+        {"input": [[1, 2, 3, 4, 5], 0], "expected": [1, 2, 3, 4, 5]},
+        {"input": [[1, 2, 3, 4, 5], 7], "expected": [3, 4, 5, 1, 2]}
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Find Missing Number in Sequence",
+      "statement": "Given an array containing n-1 numbers taken from the range 1 to n, find the missing number. For example, if the array is [1, 2, 4, 5, 6] (representing numbers 1 to 6 with one missing), the missing number is 3. The array will always have exactly one missing number.",
+      "function_signature": "def find_missing_number(arr, n):",
+      "categories": ["array_manipulation", "mathematical_algorithms"],
+      "python_constructs": ["sum_function", "range_function", "arithmetic_operations"],
+      "hints": [
+        "Use the mathematical formula for sum of first n natural numbers: n*(n+1)/2",
+        "Calculate the expected sum and subtract the actual sum of the array",
+        "This approach works in O(n) time and O(1) space"
+      ],
+      "solution": "def find_missing_number(arr, n):\n    if not arr:\n        return 1 if n == 1 else None\n    \n    # Calculate expected sum of numbers 1 to n\n    expected_sum = n * (n + 1) // 2\n    \n    # Calculate actual sum of array\n    actual_sum = sum(arr)\n    \n    # Missing number is the difference\n    return expected_sum - actual_sum",
+      "test_cases": [
+        {"input": [[1, 2, 4, 5, 6], 6], "expected": 3},
+        {"input": [[2, 3, 4, 5], 5], "expected": 1},
+        {"input": [[1, 2, 3, 4], 5], "expected": 5},
+        {"input": [[], 1], "expected": 1},
+        {"input": [[1, 3, 4, 5, 6, 7, 8, 9, 10], 10], "expected": 2}
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Remove Duplicates from Sorted Array",
+      "statement": "Given a sorted array, remove duplicates in-place and return the new length. The relative order of elements should be kept the same. For example, given [1, 1, 2, 2, 3], return length 3 and modify the array to [1, 2, 3, _, _] where underscores represent don't care values.",
+      "function_signature": "def remove_duplicates(arr):",
+      "categories": ["array_manipulation", "two_pointer_technique"],
+      "python_constructs": ["two_pointers", "while_loop", "list_indexing"],
+      "hints": [
+        "Use two pointers: one for reading and one for writing unique elements",
+        "Since the array is sorted, duplicates will be adjacent",
+        "Only advance the write pointer when you find a new unique element"
+      ],
+      "solution": "def remove_duplicates(arr):\n    if not arr:\n        return 0\n    \n    write_index = 1  # Position to write next unique element\n    \n    for read_index in range(1, len(arr)):\n        # If current element is different from previous\n        if arr[read_index] != arr[read_index - 1]:\n            arr[write_index] = arr[read_index]\n            write_index += 1\n    \n    return write_index",
+      "test_cases": [
+        {"input": [[1, 1, 2, 2, 3]], "expected": 3},
+        {"input": [[]], "expected": 0},
+        {"input": [[1]], "expected": 1},
+        {"input": [[1, 1, 1, 1]], "expected": 1},
+        {"input": [[1, 2, 3, 4, 5]], "expected": 5}
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Maximum Subarray Sum (Kadane's Algorithm)",
+      "statement": "Find the contiguous subarray with the largest sum and return the sum. For example, given [-2, 1, -3, 4, -1, 2, 1, -5, 4], the contiguous subarray [4, -1, 2, 1] has the largest sum of 6. Handle arrays with all negative numbers by returning the least negative number.",
+      "function_signature": "def max_subarray_sum(arr):",
+      "categories": ["array_manipulation", "dynamic_programming", "algorithm_implementation"],
+      "python_constructs": ["max_function", "for_loop", "variable_tracking"],
+      "hints": [
+        "Use Kadane's algorithm: track current sum and maximum sum seen so far",
+        "If current sum becomes negative, reset it to 0 (start fresh)",
+        "Keep updating maximum sum whenever current sum exceeds it"
+      ],
+      "solution": "def max_subarray_sum(arr):\n    if not arr:\n        return 0\n    \n    max_sum = current_sum = arr[0]\n    \n    for i in range(1, len(arr)):\n        # Either extend existing subarray or start new one\n        current_sum = max(arr[i], current_sum + arr[i])\n        # Update maximum sum if current is better\n        max_sum = max(max_sum, current_sum)\n    \n    return max_sum",
+      "test_cases": [
+        {"input": [[-2, 1, -3, 4, -1, 2, 1, -5, 4]], "expected": 6},
+        {"input": [[-5, -2, -8, -1]], "expected": -1},
+        {"input": [[1, 2, 3, 4, 5]], "expected": 15},
+        {"input": [[5]], "expected": 5},
+        {"input": [[-1]], "expected": -1}
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Move Zeros to End",
+      "statement": "Given an array of integers, move all zeros to the end while maintaining the relative order of non-zero elements. Modify the array in-place. For example, [0, 1, 0, 3, 12] should become [1, 3, 12, 0, 0].",
+      "function_signature": "def move_zeros_to_end(arr):",
+      "categories": ["array_manipulation", "two_pointer_technique"],
+      "python_constructs": ["two_pointers", "list_indexing", "for_loop"],
+      "hints": [
+        "Use two pointers: one to track position for next non-zero element",
+        "Iterate through array and copy non-zero elements to the front",
+        "Fill remaining positions with zeros"
+      ],
+      "solution": "def move_zeros_to_end(arr):\n    if not arr:\n        return arr\n    \n    write_index = 0\n    \n    # Move all non-zero elements to front\n    for read_index in range(len(arr)):\n        if arr[read_index] != 0:\n            arr[write_index] = arr[read_index]\n            write_index += 1\n    \n    # Fill remaining positions with zeros\n    while write_index < len(arr):\n        arr[write_index] = 0\n        write_index += 1\n    \n    return arr",
+      "test_cases": [
+        {"input": [[0, 1, 0, 3, 12]], "expected": [1, 3, 12, 0, 0]},
+        {"input": [[0, 0, 1]], "expected": [1, 0, 0]},
+        {"input": [[1, 2, 3]], "expected": [1, 2, 3]},
+        {"input": [[0, 0, 0]], "expected": [0, 0, 0]},
+        {"input": [[]], "expected": []}
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Find Intersection of Two Arrays",
+      "statement": "Given two arrays, return their intersection (common elements). Each element in the result should appear as many times as it shows in both arrays. For example, nums1 = [1, 2, 2, 1] and nums2 = [2, 2] should return [2, 2]. The result can be in any order.",
+      "function_signature": "def array_intersection(nums1, nums2):",
+      "categories": ["array_manipulation", "data_structure_operations"],
+      "python_constructs": ["dictionary", "collections_counter", "list_comprehension"],
+      "hints": [
+        "Use a hash map (dictionary) to count frequencies of elements in one array",
+        "Iterate through the second array and check if elements exist in the hash map",
+        "Decrease the count in hash map for each match found"
+      ],
+      "solution": "def array_intersection(nums1, nums2):\n    from collections import Counter\n    \n    if not nums1 or not nums2:\n        return []\n    \n    # Count frequencies in nums1\n    count = Counter(nums1)\n    result = []\n    \n    # Check each element in nums2\n    for num in nums2:\n        if count[num] > 0:\n            result.append(num)\n            count[num] -= 1\n    \n    return result",
+      "test_cases": [
+        {"input": [[1, 2, 2, 1], [2, 2]], "expected": [2, 2]},
+        {"input": [[4, 9, 5], [9, 4, 9, 8, 4]], "expected": [9, 4]},
+        {"input": [[], [1, 2]], "expected": []},
+        {"input": [[1, 2, 3], [4, 5, 6]], "expected": []},
+        {"input": [[1, 1, 1], [1, 1]], "expected": [1, 1]}
+      ]
+    },
+    {
+      "id": 7,
+      "title": "Array Partition for Equal Sums",
+      "statement": "Given an array of integers, determine if it can be partitioned into two subsets with equal sum. Return True if possible, False otherwise. For example, [1, 5, 11, 5] can be partitioned into [1, 5, 5] and [11], both with sum 11.",
+      "function_signature": "def can_partition_equal_sum(arr):",
+      "categories": ["array_manipulation", "dynamic_programming"],
+      "python_constructs": ["set", "sum_function", "for_loop", "set_operations"],
+      "hints": [
+        "First check if total sum is odd - if so, return False immediately",
+        "Use dynamic programming to check if we can achieve sum/2",
+        "Track all possible sums we can make with subsets of the array"
+      ],
+      "solution": "def can_partition_equal_sum(arr):\n    if not arr:\n        return True\n    \n    total_sum = sum(arr)\n    \n    # If total sum is odd, can't partition equally\n    if total_sum % 2 != 0:\n        return False\n    \n    target = total_sum // 2\n    possible_sums = {0}  # Set of all possible subset sums\n    \n    for num in arr:\n        # Create new possible sums by adding current number\n        new_sums = set()\n        for existing_sum in possible_sums:\n            new_sum = existing_sum + num\n            if new_sum == target:\n                return True\n            new_sums.add(new_sum)\n        \n        possible_sums.update(new_sums)\n    \n    return target in possible_sums",
+      "test_cases": [
+        {"input": [[1, 5, 11, 5]], "expected": true},
+        {"input": [[1, 2, 3, 5]], "expected": false},
+        {"input": [[1, 1]], "expected": true},
+        {"input": [[1]], "expected": false},
+        {"input": [[]], "expected": true}
+      ]
+    },
+    {
+      "id": 8,
+      "title": "Find Second Largest Element",
+      "statement": "Given an array of integers, find the second largest element. If no second largest exists (e.g., all elements are the same), return None. For example, [3, 1, 4, 1, 5] should return 4. Handle duplicate values correctly - [5, 5, 4, 4] should return 4.",
+      "function_signature": "def find_second_largest(arr):",
+      "categories": ["array_manipulation", "searching"],
+      "python_constructs": ["max_function", "set", "sorted_function", "conditional_logic"],
+      "hints": [
+        "Remove duplicates first to get unique values",
+        "Sort the unique values and return the second from the end",
+        "Handle edge cases where array has less than 2 unique elements"
+      ],
+      "solution": "def find_second_largest(arr):\n    if not arr or len(arr) < 2:\n        return None\n    \n    # Remove duplicates and sort\n    unique_elements = sorted(set(arr))\n    \n    # Need at least 2 unique elements\n    if len(unique_elements) < 2:\n        return None\n    \n    return unique_elements[-2]  # Second largest",
+      "test_cases": [
+        {"input": [[3, 1, 4, 1, 5]], "expected": 4},
+        {"input": [[5, 5, 5]], "expected": null},
+        {"input": [[1, 2]], "expected": 1},
+        {"input": [[]], "expected": null},
+        {"input": [[10, 10, 9, 9, 8]], "expected": 9}
+      ]
+    },
+    {
+      "id": 9,
+      "title": "Merge Two Sorted Arrays",
+      "statement": "Given two sorted arrays nums1 and nums2, merge them into nums1 in-place. nums1 has enough space (length m+n) to hold all elements, but only the first m elements are meaningful. For example, nums1 = [1,2,3,0,0,0] (m=3), nums2 = [2,5,6] (n=3) should result in nums1 = [1,2,2,3,5,6].",
+      "function_signature": "def merge_sorted_arrays(nums1, m, nums2, n):",
+      "categories": ["array_manipulation", "two_pointer_technique", "sorting"],
+      "python_constructs": ["two_pointers", "while_loop", "list_indexing"],
+      "hints": [
+        "Start merging from the end to avoid overwriting elements in nums1",
+        "Use three pointers: end of nums1, end of meaningful part of nums1, end of nums2",
+        "Compare elements and place the larger one at the current position"
+      ],
+      "solution": "def merge_sorted_arrays(nums1, m, nums2, n):\n    # Start from the end of both arrays\n    i = m - 1      # Last element in nums1\n    j = n - 1      # Last element in nums2\n    k = m + n - 1  # Last position in nums1\n    \n    # Merge from the end\n    while i >= 0 and j >= 0:\n        if nums1[i] > nums2[j]:\n            nums1[k] = nums1[i]\n            i -= 1\n        else:\n            nums1[k] = nums2[j]\n            j -= 1\n        k -= 1\n    \n    # Copy remaining elements from nums2\n    while j >= 0:\n        nums1[k] = nums2[j]\n        j -= 1\n        k -= 1\n    \n    return nums1",
+      "test_cases": [
+        {"input": [[1, 2, 3, 0, 0, 0], 3, [2, 5, 6], 3], "expected": [1, 2, 2, 3, 5, 6]},
+        {"input": [[1], 1, [], 0], "expected": [1]},
+        {"input": [[0], 0, [1], 1], "expected": [1]},
+        {"input": [[4, 5, 6, 0, 0, 0], 3, [1, 2, 3], 3], "expected": [1, 2, 3, 4, 5, 6]},
+        {"input": [[1, 3, 5, 0, 0], 3, [2, 4], 2], "expected": [1, 2, 3, 4, 5]}
+      ]
+    },
+    {
+      "id": 10,
+      "title": "Product of Array Except Self",
+      "statement": "Given an array of integers, return an array where each element is the product of all elements except the one at the current index. Do not use division and solve in O(n) time. For example, [1, 2, 3, 4] should return [24, 12, 8, 6]. Assume no zeros in input for basic version.",
+      "function_signature": "def product_except_self(arr):",
+      "categories": ["array_manipulation", "mathematical_algorithms"],
+      "python_constructs": ["list_comprehension", "for_loop", "range_function"],
+      "hints": [
+        "Calculate left products: product of all elements to the left of each index",
+        "Calculate right products: product of all elements to the right of each index",
+        "Multiply left and right products for each position"
+      ],
+      "solution": "def product_except_self(arr):\n    if not arr:\n        return []\n    \n    n = len(arr)\n    result = [1] * n\n    \n    # Calculate left products\n    left_product = 1\n    for i in range(n):\n        result[i] = left_product\n        left_product *= arr[i]\n    \n    # Calculate right products and multiply with left products\n    right_product = 1\n    for i in range(n - 1, -1, -1):\n        result[i] *= right_product\n        right_product *= arr[i]\n    \n    return result",
+      "test_cases": [
+        {"input": [[1, 2, 3, 4]], "expected": [24, 12, 8, 6]},
+        {"input": [[2, 3, 4, 5]], "expected": [60, 40, 30, 24]},
+        {"input": [[1, 1, 1, 1]], "expected": [1, 1, 1, 1]},
+        {"input": [[5]], "expected": [1]},
+        {"input": [[2, 7]], "expected": [7, 2]}
+      ]
+    }
+  ]
+}

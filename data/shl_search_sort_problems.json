@@ -1,0 +1,267 @@
+{
+  "problems": [
+    {
+      "id": 60,
+      "title": "Binary Search Implementation",
+      "statement": "Implement binary search to find the index of a target value in a sorted array. Return the index if found, -1 if not found. The algorithm should have O(log n) time complexity. For example, binary_search([1, 3, 5, 7, 9], 5) should return 2. Handle edge cases like empty arrays and single elements.",
+      "function_signature": "def binary_search(arr, target):",
+      "categories": ["search_and_sort", "optimization_problems"],
+      "python_constructs": ["binary_search_algorithm", "while_loop", "array_indexing"],
+      "hints": [
+        "Use two pointers (left and right) to track search boundaries",
+        "Calculate middle index and compare with target",
+        "Adjust search boundaries based on comparison result"
+      ],
+      "solution": "def binary_search(arr, target):\n    if not arr:\n        return -1\n    \n    left, right = 0, len(arr) - 1\n    \n    while left <= right:\n        mid = (left + right) // 2\n        \n        if arr[mid] == target:\n            return mid\n        elif arr[mid] < target:\n            left = mid + 1\n        else:\n            right = mid - 1\n    \n    return -1",
+      "test_cases": [
+        {"input": [[1, 3, 5, 7, 9], 5], "expected": 2},
+        {"input": [[1, 3, 5, 7, 9], 10], "expected": -1},
+        {"input": [[], 5], "expected": -1},
+        {"input": [[1], 1], "expected": 0},
+        {"input": [[1, 2, 3, 4, 5], 1], "expected": 0}
+      ]
+    },
+    {
+      "id": 61,
+      "title": "Find Element in Rotated Sorted Array",
+      "statement": "Search for a target value in a rotated sorted array. A rotated sorted array is a sorted array that has been rotated at some pivot point, e.g., [4, 5, 6, 7, 0, 1, 2] was rotated at index 4. Return the index if found, -1 otherwise. Maintain O(log n) time complexity.",
+      "function_signature": "def search_rotated_array(nums, target):",
+      "categories": ["search_and_sort", "array_manipulation"],
+      "python_constructs": ["modified_binary_search", "conditional_logic", "array_analysis"],
+      "hints": [
+        "Use modified binary search by determining which half is properly sorted",
+        "Check if target lies within the sorted half's range",
+        "Adjust search boundaries based on which half contains the target"
+      ],
+      "solution": "def search_rotated_array(nums, target):\n    if not nums:\n        return -1\n    \n    left, right = 0, len(nums) - 1\n    \n    while left <= right:\n        mid = (left + right) // 2\n        \n        if nums[mid] == target:\n            return mid\n        \n        # Determine which half is sorted\n        if nums[left] <= nums[mid]:  # Left half is sorted\n            if nums[left] <= target < nums[mid]:\n                right = mid - 1\n            else:\n                left = mid + 1\n        else:  # Right half is sorted\n            if nums[mid] < target <= nums[right]:\n                left = mid + 1\n            else:\n                right = mid - 1\n    \n    return -1",
+      "test_cases": [
+        {"input": [[4, 5, 6, 7, 0, 1, 2], 0], "expected": 4},
+        {"input": [[4, 5, 6, 7, 0, 1, 2], 3], "expected": -1},
+        {"input": [[1], 0], "expected": -1},
+        {"input": [[1, 3], 3], "expected": 1},
+        {"input": [[3, 1], 1], "expected": 1}
+      ]
+    },
+    {
+      "id": 62,
+      "title": "Bubble Sort Implementation",
+      "statement": "Implement the bubble sort algorithm to sort an array in ascending order. Bubble sort repeatedly steps through the list, compares adjacent elements and swaps them if they're in wrong order. Include optimization to stop early if no swaps are made in a pass. Return the sorted array and number of swaps made.",
+      "function_signature": "def bubble_sort(arr):",
+      "categories": ["search_and_sort", "algorithm_implementation"],
+      "python_constructs": ["nested_loops", "array_swapping", "optimization_flags"],
+      "hints": [
+        "Use nested loops: outer for passes, inner for comparisons",
+        "Swap adjacent elements if left > right",
+        "Optimize by stopping early if no swaps occur in a complete pass"
+      ],
+      "solution": "def bubble_sort(arr):\n    if not arr or len(arr) <= 1:\n        return arr[:], 0\n    \n    arr = arr[:]  # Create a copy to avoid modifying original\n    n = len(arr)\n    swaps = 0\n    \n    for i in range(n):\n        swapped = False\n        \n        # Last i elements are already in place\n        for j in range(0, n - i - 1):\n            if arr[j] > arr[j + 1]:\n                arr[j], arr[j + 1] = arr[j + 1], arr[j]\n                swaps += 1\n                swapped = True\n        \n        # If no swapping occurred, array is sorted\n        if not swapped:\n            break\n    \n    return arr, swaps",
+      "test_cases": [
+        {"input": [[64, 34, 25, 12, 22, 11, 90]], "expected": [[11, 12, 22, 25, 34, 64, 90], 13]},
+        {"input": [[1, 2, 3, 4, 5]], "expected": [[1, 2, 3, 4, 5], 0]},
+        {"input": [[5, 4, 3, 2, 1]], "expected": [[1, 2, 3, 4, 5], 10]},
+        {"input": [[]], "expected": [[], 0]},
+        {"input": [[42]], "expected": [[42], 0]}
+      ]
+    },
+    {
+      "id": 63,
+      "title": "Selection Sort Implementation",
+      "statement": "Implement selection sort algorithm that finds the minimum element from unsorted portion and places it at the beginning. The algorithm divides the array into sorted and unsorted portions, repeatedly selecting the minimum from unsorted portion. Return sorted array and number of comparisons made.",
+      "function_signature": "def selection_sort(arr):",
+      "categories": ["search_and_sort", "algorithm_implementation"],
+      "python_constructs": ["nested_loops", "min_element_finding", "array_swapping"],
+      "hints": [
+        "For each position, find the minimum element in remaining unsorted portion",
+        "Swap the found minimum with the element at current position",
+        "Track comparisons made during minimum element search"
+      ],
+      "solution": "def selection_sort(arr):\n    if not arr or len(arr) <= 1:\n        return arr[:], 0\n    \n    arr = arr[:]  # Create a copy\n    n = len(arr)\n    comparisons = 0\n    \n    for i in range(n):\n        min_idx = i\n        \n        # Find minimum element in remaining unsorted array\n        for j in range(i + 1, n):\n            comparisons += 1\n            if arr[j] < arr[min_idx]:\n                min_idx = j\n        \n        # Swap found minimum with first element\n        if min_idx != i:\n            arr[i], arr[min_idx] = arr[min_idx], arr[i]\n    \n    return arr, comparisons",
+      "test_cases": [
+        {"input": [[64, 25, 12, 22, 11]], "expected": [[11, 12, 22, 25, 64], 10]},
+        {"input": [[5, 4, 3, 2, 1]], "expected": [[1, 2, 3, 4, 5], 10]},
+        {"input": [[1, 2, 3]], "expected": [[1, 2, 3], 3]},
+        {"input": [[]], "expected": [[], 0]},
+        {"input": [[7]], "expected": [[7], 0]}
+      ]
+    },
+    {
+      "id": 64,
+      "title": "Insertion Sort Implementation",
+      "statement": "Implement insertion sort algorithm that builds the final sorted array one element at a time. It takes each element from the unsorted portion and inserts it into its correct position in the sorted portion. Return the sorted array and number of shifts made during insertion.",
+      "function_signature": "def insertion_sort(arr):",
+      "categories": ["search_and_sort", "algorithm_implementation"],
+      "python_constructs": ["array_insertion", "while_loop", "element_shifting"],
+      "hints": [
+        "Start from second element, assume first element is sorted",
+        "For each element, find its correct position in sorted portion",
+        "Shift elements to make space and insert current element"
+      ],
+      "solution": "def insertion_sort(arr):\n    if not arr or len(arr) <= 1:\n        return arr[:], 0\n    \n    arr = arr[:]  # Create a copy\n    shifts = 0\n    \n    for i in range(1, len(arr)):\n        key = arr[i]\n        j = i - 1\n        \n        # Move elements greater than key one position ahead\n        while j >= 0 and arr[j] > key:\n            arr[j + 1] = arr[j]\n            j -= 1\n            shifts += 1\n        \n        arr[j + 1] = key\n    \n    return arr, shifts",
+      "test_cases": [
+        {"input": [[12, 11, 13, 5, 6]], "expected": [[5, 6, 11, 12, 13], 8]},
+        {"input": [[1, 2, 3, 4, 5]], "expected": [[1, 2, 3, 4, 5], 0]},
+        {"input": [[5, 4, 3, 2, 1]], "expected": [[1, 2, 3, 4, 5], 10]},
+        {"input": [[]], "expected": [[], 0]},
+        {"input": [[9]], "expected": [[9], 0]}
+      ]
+    },
+    {
+      "id": 65,
+      "title": "Find Kth Largest Element",
+      "statement": "Find the kth largest element in an unsorted array without fully sorting it. For example, in [3, 2, 1, 5, 6, 4], the 2nd largest element is 5. Use an efficient approach like quickselect algorithm or heap-based solution. Handle edge cases where k is out of bounds.",
+      "function_signature": "def find_kth_largest(nums, k):",
+      "categories": ["search_and_sort", "optimization_problems"],
+      "python_constructs": ["quickselect_algorithm", "partitioning", "heap_operations"],
+      "hints": [
+        "Use quickselect algorithm for O(n) average time complexity",
+        "Partition array around a pivot and recursively search appropriate half",
+        "Alternative: use min heap of size k for O(n log k) solution"
+      ],
+      "solution": "def find_kth_largest(nums, k):\n    if not nums or k <= 0 or k > len(nums):\n        return None\n    \n    def quickselect(left, right, k_smallest):\n        # Partition around pivot and return pivot index\n        def partition(left, right, pivot_index):\n            pivot_value = nums[pivot_index]\n            # Move pivot to end\n            nums[pivot_index], nums[right] = nums[right], nums[pivot_index]\n            \n            store_index = left\n            for i in range(left, right):\n                if nums[i] < pivot_value:\n                    nums[store_index], nums[i] = nums[i], nums[store_index]\n                    store_index += 1\n            \n            # Move pivot to its final place\n            nums[right], nums[store_index] = nums[store_index], nums[right]\n            return store_index\n        \n        if left == right:\n            return nums[left]\n        \n        # Choose random pivot\n        import random\n        pivot_index = random.randint(left, right)\n        pivot_index = partition(left, right, pivot_index)\n        \n        if k_smallest == pivot_index:\n            return nums[k_smallest]\n        elif k_smallest < pivot_index:\n            return quickselect(left, pivot_index - 1, k_smallest)\n        else:\n            return quickselect(pivot_index + 1, right, k_smallest)\n    \n    # Convert kth largest to (n-k)th smallest (0-indexed)\n    return quickselect(0, len(nums) - 1, len(nums) - k)",
+      "test_cases": [
+        {"input": [[3, 2, 1, 5, 6, 4], 2], "expected": 5},
+        {"input": [[3, 2, 3, 1, 2, 4, 5, 5, 6], 4], "expected": 4},
+        {"input": [[1], 1], "expected": 1},
+        {"input": [[7, 10, 4, 3, 20, 15], 3], "expected": 10},
+        {"input": [[2, 1], 2], "expected": 1}
+      ]
+    },
+    {
+      "id": 66,
+      "title": "Merge Sort Implementation",
+      "statement": "Implement merge sort algorithm using divide-and-conquer approach. Recursively divide the array into halves until single elements, then merge them back in sorted order. Return the sorted array and count of merge operations. The algorithm should have O(n log n) time complexity.",
+      "function_signature": "def merge_sort(arr):",
+      "categories": ["search_and_sort", "algorithm_implementation"],
+      "python_constructs": ["recursion", "divide_and_conquer", "array_merging"],
+      "hints": [
+        "Recursively divide array into two halves until base case (single element)",
+        "Merge two sorted halves by comparing elements from both arrays",
+        "Use auxiliary space for merging and track merge operations"
+      ],
+      "solution": "def merge_sort(arr):\n    merge_operations = [0]  # Use list to make it mutable in nested function\n    \n    def merge_sort_helper(arr):\n        if len(arr) <= 1:\n            return arr\n        \n        mid = len(arr) // 2\n        left = merge_sort_helper(arr[:mid])\n        right = merge_sort_helper(arr[mid:])\n        \n        return merge(left, right)\n    \n    def merge(left, right):\n        merged = []\n        i = j = 0\n        \n        # Merge elements in sorted order\n        while i < len(left) and j < len(right):\n            if left[i] <= right[j]:\n                merged.append(left[i])\n                i += 1\n            else:\n                merged.append(right[j])\n                j += 1\n        \n        # Add remaining elements\n        merged.extend(left[i:])\n        merged.extend(right[j:])\n        \n        merge_operations[0] += 1\n        return merged\n    \n    if not arr:\n        return [], 0\n    \n    sorted_arr = merge_sort_helper(arr)\n    return sorted_arr, merge_operations[0]",
+      "test_cases": [
+        {"input": [[38, 27, 43, 3, 9, 82, 10]], "expected": [[3, 9, 10, 27, 38, 43, 82], 6]},
+        {"input": [[1, 2, 3, 4]], "expected": [[1, 2, 3, 4], 3]},
+        {"input": [[4, 3, 2, 1]], "expected": [[1, 2, 3, 4], 3]},
+        {"input": [[]], "expected": [[], 0]},
+        {"input": [[5]], "expected": [[5], 0]}
+      ]
+    },
+    {
+      "id": 67,
+      "title": "Quick Sort Implementation",
+      "statement": "Implement quicksort algorithm using divide-and-conquer with partitioning. Choose a pivot element, partition array so elements smaller than pivot are on left, larger on right, then recursively sort both parts. Return sorted array and number of partitions. Handle worst-case scenarios appropriately.",
+      "function_signature": "def quick_sort(arr):",
+      "categories": ["search_and_sort", "algorithm_implementation"],
+      "python_constructs": ["recursion", "partitioning", "pivot_selection"],
+      "hints": [
+        "Choose pivot (first, last, or random element)",
+        "Partition array around pivot using two-pointer technique",
+        "Recursively apply quicksort to left and right partitions"
+      ],
+      "solution": "def quick_sort(arr):\n    if not arr:\n        return [], 0\n    \n    arr = arr[:]  # Create copy to avoid modifying original\n    partitions = [0]  # Use list to make it mutable in nested function\n    \n    def quick_sort_helper(low, high):\n        if low < high:\n            # Partition array and get pivot index\n            pivot_index = partition(low, high)\n            partitions[0] += 1\n            \n            # Recursively sort elements before and after partition\n            quick_sort_helper(low, pivot_index - 1)\n            quick_sort_helper(pivot_index + 1, high)\n    \n    def partition(low, high):\n        # Choose rightmost element as pivot\n        pivot = arr[high]\n        \n        # Index of smaller element (correct position of pivot)\n        i = low - 1\n        \n        for j in range(low, high):\n            # If current element is smaller than or equal to pivot\n            if arr[j] <= pivot:\n                i += 1\n                arr[i], arr[j] = arr[j], arr[i]\n        \n        # Place pivot in correct position\n        arr[i + 1], arr[high] = arr[high], arr[i + 1]\n        return i + 1\n    \n    quick_sort_helper(0, len(arr) - 1)\n    return arr, partitions[0]",
+      "test_cases": [
+        {"input": [[10, 7, 8, 9, 1, 5]], "expected": [[1, 5, 7, 8, 9, 10], 5]},
+        {"input": [[1, 2, 3, 4, 5]], "expected": [[1, 2, 3, 4, 5], 4]},
+        {"input": [[5, 4, 3, 2, 1]], "expected": [[1, 2, 3, 4, 5], 4]},
+        {"input": [[]], "expected": [[], 0]},
+        {"input": [[3]], "expected": [[3], 0]}
+      ]
+    },
+    {
+      "id": 68,
+      "title": "Count Inversions in Array",
+      "statement": "Count the number of inversions in an array. An inversion is a pair of indices (i, j) such that i < j but arr[i] > arr[j]. For example, [2, 3, 8, 6, 1] has 5 inversions: (2,1), (3,1), (8,6), (8,1), (6,1). Use an efficient O(n log n) algorithm based on merge sort.",
+      "function_signature": "def count_inversions(arr):",
+      "categories": ["search_and_sort", "mathematical_algorithms"],
+      "python_constructs": ["modified_merge_sort", "inversion_counting", "divide_and_conquer"],
+      "hints": [
+        "Use modified merge sort to count inversions during merge process",
+        "When merging, if element from right array is smaller, it forms inversions",
+        "Count inversions = remaining elements in left array when taking from right"
+      ],
+      "solution": "def count_inversions(arr):\n    if not arr or len(arr) <= 1:\n        return 0\n    \n    def merge_and_count(left, right):\n        merged = []\n        i = j = inversions = 0\n        \n        while i < len(left) and j < len(right):\n            if left[i] <= right[j]:\n                merged.append(left[i])\n                i += 1\n            else:\n                # right[j] is smaller than left[i], so there are\n                # (len(left) - i) inversions\n                merged.append(right[j])\n                inversions += len(left) - i\n                j += 1\n        \n        # Add remaining elements\n        merged.extend(left[i:])\n        merged.extend(right[j:])\n        \n        return merged, inversions\n    \n    def merge_sort_and_count(arr):\n        if len(arr) <= 1:\n            return arr, 0\n        \n        mid = len(arr) // 2\n        left, left_inv = merge_sort_and_count(arr[:mid])\n        right, right_inv = merge_sort_and_count(arr[mid:])\n        \n        merged, split_inv = merge_and_count(left, right)\n        \n        return merged, left_inv + right_inv + split_inv\n    \n    _, total_inversions = merge_sort_and_count(arr)\n    return total_inversions",
+      "test_cases": [
+        {"input": [[2, 3, 8, 6, 1]], "expected": 5},
+        {"input": [[1, 2, 3, 4, 5]], "expected": 0},
+        {"input": [[5, 4, 3, 2, 1]], "expected": 10},
+        {"input": [[1, 3, 2]], "expected": 1},
+        {"input": [[]], "expected": 0}
+      ]
+    },
+    {
+      "id": 69,
+      "title": "Search in 2D Matrix",
+      "statement": "Search for a target value in a 2D matrix where each row is sorted in ascending order and the first integer of each row is greater than the last integer of the previous row. Use binary search approach for O(log(m*n)) time complexity where m and n are matrix dimensions.",
+      "function_signature": "def search_matrix(matrix, target):",
+      "categories": ["search_and_sort", "array_manipulation"],
+      "python_constructs": ["2d_array_indexing", "binary_search", "coordinate_conversion"],
+      "hints": [
+        "Treat 2D matrix as a flattened 1D array for binary search",
+        "Convert 1D index to 2D coordinates: row = idx // cols, col = idx % cols",
+        "Use binary search on the conceptual 1D representation"
+      ],
+      "solution": "def search_matrix(matrix, target):\n    if not matrix or not matrix[0]:\n        return False\n    \n    m, n = len(matrix), len(matrix[0])\n    left, right = 0, m * n - 1\n    \n    while left <= right:\n        mid = (left + right) // 2\n        \n        # Convert 1D index to 2D coordinates\n        mid_row = mid // n\n        mid_col = mid % n\n        mid_value = matrix[mid_row][mid_col]\n        \n        if mid_value == target:\n            return True\n        elif mid_value < target:\n            left = mid + 1\n        else:\n            right = mid - 1\n    \n    return False",
+      "test_cases": [
+        {"input": [[[1, 4, 7, 11], [2, 5, 8, 12], [3, 6, 9, 16]], 5], "expected": true},
+        {"input": [[[1, 4, 7, 11], [2, 5, 8, 12], [3, 6, 9, 16]], 13], "expected": false},
+        {"input": [[[1]], 1], "expected": true},
+        {"input": [[[1, 3, 5]], 3], "expected": true},
+        {"input": [[], 1], "expected": false}
+      ]
+    },
+    {
+      "id": 70,
+      "title": "Find First and Last Position of Element",
+      "statement": "Find the first and last position of a target element in a sorted array with possible duplicates. Return [-1, -1] if target is not found. For example, in [5,7,7,8,8,10] with target 8, return [3,4]. Use binary search to achieve O(log n) time complexity.",
+      "function_signature": "def search_range(nums, target):",
+      "categories": ["search_and_sort", "binary_search_variants"],
+      "python_constructs": ["binary_search_variations", "boundary_finding", "duplicate_handling"],
+      "hints": [
+        "Use two separate binary searches: one for leftmost, one for rightmost position",
+        "For leftmost: when target found, continue searching left half",
+        "For rightmost: when target found, continue searching right half"
+      ],
+      "solution": "def search_range(nums, target):\n    def find_leftmost(nums, target):\n        left, right = 0, len(nums) - 1\n        leftmost = -1\n        \n        while left <= right:\n            mid = (left + right) // 2\n            \n            if nums[mid] == target:\n                leftmost = mid\n                right = mid - 1  # Continue searching left\n            elif nums[mid] < target:\n                left = mid + 1\n            else:\n                right = mid - 1\n        \n        return leftmost\n    \n    def find_rightmost(nums, target):\n        left, right = 0, len(nums) - 1\n        rightmost = -1\n        \n        while left <= right:\n            mid = (left + right) // 2\n            \n            if nums[mid] == target:\n                rightmost = mid\n                left = mid + 1  # Continue searching right\n            elif nums[mid] < target:\n                left = mid + 1\n            else:\n                right = mid - 1\n        \n        return rightmost\n    \n    if not nums:\n        return [-1, -1]\n    \n    leftmost = find_leftmost(nums, target)\n    if leftmost == -1:\n        return [-1, -1]\n    \n    rightmost = find_rightmost(nums, target)\n    return [leftmost, rightmost]",
+      "test_cases": [
+        {"input": [[5, 7, 7, 8, 8, 10], 8], "expected": [3, 4]},
+        {"input": [[5, 7, 7, 8, 8, 10], 6], "expected": [-1, -1]},
+        {"input": [[], 0], "expected": [-1, -1]},
+        {"input": [[1], 1], "expected": [0, 0]},
+        {"input": [[2, 2, 2, 2], 2], "expected": [0, 3]}
+      ]
+    },
+    {
+      "id": 71,
+      "title": "Merge Intervals by Start Time",
+      "statement": "Given a collection of intervals, merge all overlapping intervals and return them sorted by start time. Each interval is represented as [start, end]. For example, [[1,3],[2,6],[8,10],[15,18]] becomes [[1,6],[8,10],[15,18]]. Sort the intervals first if not already sorted.",
+      "function_signature": "def merge_intervals(intervals):",
+      "categories": ["search_and_sort", "interval_processing"],
+      "python_constructs": ["sorting", "interval_merging", "conditional_logic"],
+      "hints": [
+        "Sort intervals by start time first",
+        "Iterate through sorted intervals and merge overlapping ones",
+        "Two intervals overlap if current start <= previous end"
+      ],
+      "solution": "def merge_intervals(intervals):\n    if not intervals:\n        return []\n    \n    # Sort intervals by start time\n    intervals.sort(key=lambda x: x[0])\n    merged = [intervals[0]]\n    \n    for current in intervals[1:]:\n        last_merged = merged[-1]\n        \n        # Check if current interval overlaps with last merged interval\n        if current[0] <= last_merged[1]:\n            # Merge intervals by updating end time\n            last_merged[1] = max(last_merged[1], current[1])\n        else:\n            # No overlap, add current interval\n            merged.append(current)\n    \n    return merged",
+      "test_cases": [
+        {"input": [[[1, 3], [2, 6], [8, 10], [15, 18]]], "expected": [[1, 6], [8, 10], [15, 18]]},
+        {"input": [[[1, 4], [4, 5]]], "expected": [[1, 5]]},
+        {"input": [[[1, 4], [0, 4]]], "expected": [[0, 4]]},
+        {"input": [[[1, 4], [2, 3]]], "expected": [[1, 4]]},
+        {"input": [[]], "expected": []}
+      ]
+    },
+    {
+      "id": 72,
+      "title": "Top K Frequent Elements",
+      "statement": "Find the k most frequent elements in an array. Return them in any order. For example, given [1,1,1,2,2,3] and k=2, return [1,2]. Use an efficient approach like heap or bucket sort to achieve better than O(n log n) time complexity when possible.",
+      "function_signature": "def top_k_frequent(nums, k):",
+      "categories": ["search_and_sort", "frequency_analysis"],
+      "python_constructs": ["frequency_counting", "heap_operations", "bucket_sort"],
+      "hints": [
+        "Count frequency of each element using dictionary or Counter",
+        "Use min heap of size k to track top k frequent elements",
+        "Alternative: use bucket sort where index represents frequency"
+      ],
+      "solution": "def top_k_frequent(nums, k):\n    from collections import Counter\n    import heapq\n    \n    if not nums or k <= 0:\n        return []\n    \n    # Count frequency of each element\n    freq_count = Counter(nums)\n    \n    #

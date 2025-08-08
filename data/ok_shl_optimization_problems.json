@@ -1,0 +1,224 @@
+{
+  "problems": [
+    {
+      "id": 1,
+      "title": "0/1 Knapsack Problem",
+      "statement": "You are given a knapsack with a weight capacity W and n items, each with a weight and value. You can either take an item or leave it (0/1 choice). Find the maximum value that can be obtained without exceeding the weight capacity.\n\nInput: capacity (int), items (list of [weight, value] pairs)\n\nExample: capacity=50, items=[[10,60], [20,100], [30,120]] should return 220 (take items with weights 20 and 30).",
+      "function_signature": "def knapsack_01(capacity, items):",
+      "categories": ["optimization_problems", "dynamic_programming", "combinatorics_and_counting"],
+      "python_constructs": ["dynamic_programming", "nested_loops", "2d_array", "max_function", "list_comprehension"],
+      "hints": [
+        "Use dynamic programming with a 2D table dp[i][w] representing max value with first i items and weight limit w",
+        "For each item, decide whether to include it or not based on which gives maximum value",
+        "Base case: dp[0][w] = 0 for all w (no items means 0 value)"
+      ],
+      "solution": "def knapsack_01(capacity, items):\n    n = len(items)\n    if n == 0 or capacity == 0:\n        return 0\n    \n    # dp[i][w] = maximum value with first i items and weight limit w\n    dp = [[0 for _ in range(capacity + 1)] for _ in range(n + 1)]\n    \n    for i in range(1, n + 1):\n        weight, value = items[i-1]\n        for w in range(capacity + 1):\n            # Don't take current item\n            dp[i][w] = dp[i-1][w]\n            \n            # Take current item if it fits\n            if weight <= w:\n                dp[i][w] = max(dp[i][w], dp[i-1][w-weight] + value)\n    \n    return dp[n][capacity]",
+      "test_cases": [
+        {"input": [50, [[10, 60], [20, 100], [30, 120]]], "expected": 220},
+        {"input": [10, [[5, 10], [4, 40], [6, 30], [3, 50]]], "expected": 90},
+        {"input": [0, [[1, 1], [2, 2]]], "expected": 0},
+        {"input": [100, []], "expected": 0},
+        {"input": [15, [[10, 10], [20, 20], [30, 30]]], "expected": 10},
+        {"input": [25, [[10, 60], [20, 100], [15, 120]]], "expected": 180}
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Job Scheduling with Deadlines",
+      "statement": "Given n jobs with deadlines and profits, schedule jobs to maximize profit. Each job takes 1 unit of time and must be completed before its deadline. Only one job can be scheduled at a time. Return the maximum profit achievable.\n\nInput: jobs list of [profit, deadline] pairs\n\nExample: [[100,2], [19,1], [27,2], [25,1], [15,3]] should return 142 (jobs with profits 100, 27, 15).",
+      "function_signature": "def job_scheduling(jobs):",
+      "categories": ["optimization_problems", "greedy_algorithms", "scheduling"],
+      "python_constructs": ["sorting", "greedy_approach", "list_operations", "for_loop", "boolean_array"],
+      "hints": [
+        "Sort jobs by profit in descending order (greedy approach)",
+        "Use a boolean array to track which time slots are occupied",
+        "For each job, find the latest available slot before its deadline"
+      ],
+      "solution": "def job_scheduling(jobs):\n    if not jobs:\n        return 0\n    \n    # Sort jobs by profit in descending order\n    jobs.sort(key=lambda x: x[0], reverse=True)\n    \n    # Find maximum deadline\n    max_deadline = max(job[1] for job in jobs)\n    \n    # Track which time slots are occupied\n    time_slots = [False] * max_deadline\n    total_profit = 0\n    \n    for profit, deadline in jobs:\n        # Find latest available slot before deadline (deadline is 1-indexed)\n        for slot in range(min(deadline - 1, max_deadline - 1), -1, -1):\n            if slot >= 0 and not time_slots[slot]:\n                time_slots[slot] = True\n                total_profit += profit\n                break\n    \n    return total_profit",
+      "test_cases": [
+        {"input": [[[100, 2], [19, 1], [27, 2], [25, 1], [15, 3]]], "expected": 142},
+        {"input": [[[20, 1], [15, 2], [10, 1], [5, 3]]], "expected": 40},
+        {"input": [[[100, 1]]], "expected": 100},
+        {"input": [[]], "expected": 0},
+        {"input": [[[50, 2], [10, 1], [20, 2], [30, 1]]], "expected": 80},
+        {"input": [[[35, 3], [30, 4], [25, 4], [20, 2], [15, 3], [12, 1], [5, 2]]], "expected": 110}
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Activity Selection Problem",
+      "statement": "Given n activities with start and finish times, select the maximum number of activities that can be performed by a single person, assuming that a person can only work on a single activity at a time.\n\nInput: activities list of [start_time, end_time] pairs\n\nExample: [[1,3], [3,5], [0,6], [5,7], [8,9], [5,9]] should return 4 activities (indices representing maximum non-overlapping activities).",
+      "function_signature": "def activity_selection(activities):",
+      "categories": ["optimization_problems", "greedy_algorithms", "scheduling"],
+      "python_constructs": ["sorting", "greedy_approach", "list_operations", "enumeration"],
+      "hints": [
+        "Sort activities by their finish times (greedy choice)",
+        "Always pick the activity that finishes earliest and doesn't conflict",
+        "Keep track of the last selected activity's finish time"
+      ],
+      "solution": "def activity_selection(activities):\n    if not activities:\n        return 0\n    \n    # Sort by finish time\n    sorted_activities = sorted(activities, key=lambda x: x[1])\n    \n    selected_count = 1\n    last_finish_time = sorted_activities[0][1]\n    \n    for i in range(1, len(sorted_activities)):\n        start_time, finish_time = sorted_activities[i]\n        \n        # If this activity starts after or when the last selected activity finishes\n        if start_time >= last_finish_time:\n            selected_count += 1\n            last_finish_time = finish_time\n    \n    return selected_count",
+      "test_cases": [
+        {"input": [[[1, 3], [3, 5], [0, 6], [5, 7], [8, 9], [5, 9]]], "expected": 4},
+        {"input": [[[1, 2], [3, 4], [5, 6]]], "expected": 3},
+        {"input": [[[0, 6], [1, 4], [3, 5], [3, 8], [4, 7], [5, 9], [6, 10], [8, 11]]], "expected": 3},
+        {"input": [[]], "expected": 0},
+        {"input": [[[1, 4], [2, 3], [4, 6]]], "expected": 2},
+        {"input": [[[0, 1], [1, 2], [2, 3], [3, 4]]], "expected": 4}
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Fractional Knapsack Problem",
+      "statement": "Given items with weights and values, and a knapsack with weight capacity W, maximize the total value by taking fractions of items if needed. Unlike 0/1 knapsack, you can take any fraction of an item. Return the maximum value achievable.\n\nInput: capacity (int), items (list of [weight, value] pairs)\n\nExample: capacity=50, items=[[20,100], [30,120], [10,60]] should return 240.0.",
+      "function_signature": "def fractional_knapsack(capacity, items):",
+      "categories": ["optimization_problems", "greedy_algorithms", "mathematical_algorithms"],
+      "python_constructs": ["sorting", "greedy_approach", "float_operations", "min_function"],
+      "hints": [
+        "Calculate value-to-weight ratio for each item",
+        "Sort items by value-to-weight ratio in descending order",
+        "Take items greedily, using fractions for the last item if needed"
+      ],
+      "solution": "def fractional_knapsack(capacity, items):\n    if not items or capacity == 0:\n        return 0.0\n    \n    # Calculate value-to-weight ratio and sort\n    item_ratios = []\n    for i, (weight, value) in enumerate(items):\n        if weight > 0:  # Avoid division by zero\n            item_ratios.append((value / weight, weight, value))\n    \n    # Sort by ratio in descending order\n    item_ratios.sort(reverse=True)\n    \n    total_value = 0.0\n    remaining_capacity = float(capacity)\n    \n    for ratio, weight, value in item_ratios:\n        if remaining_capacity <= 0:\n            break\n            \n        # Take as much as possible from this item\n        take_weight = min(float(weight), remaining_capacity)\n        total_value += take_weight * ratio\n        remaining_capacity -= take_weight\n    \n    return round(total_value, 1)",
+      "test_cases": [
+        {"input": [50, [[20, 100], [30, 120], [10, 60]]], "expected": 240.0},
+        {"input": [15, [[10, 10], [20, 20], [30, 30]]], "expected": 15.0},
+        {"input": [0, [[1, 1], [2, 2]]], "expected": 0.0},
+        {"input": [100, []], "expected": 0.0},
+        {"input": [60, [[10, 60], [20, 100], [30, 120]]], "expected": 280.0},
+        {"input": [25, [[5, 30], [10, 50], [15, 60], [22, 90], [25, 100]]], "expected": 120.9}
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Minimum Coin Change Problem",
+      "statement": "Given a set of coin denominations and a target amount, find the minimum number of coins needed to make that amount. If it's impossible to make the amount, return -1.\n\nInput: coins (list of denominations), amount (target amount)\n\nExample: coins=[1,3,4], amount=6 should return 2 (using coins 3+3).",
+      "function_signature": "def min_coin_change(coins, amount):",
+      "categories": ["optimization_problems", "dynamic_programming", "mathematical_algorithms"],
+      "python_constructs": ["dynamic_programming", "list_operations", "min_function", "infinity"],
+      "hints": [
+        "Use dynamic programming with dp[i] representing minimum coins for amount i",
+        "For each amount, try all coin denominations and take the minimum",
+        "Initialize dp array with infinity, except dp[0] = 0"
+      ],
+      "solution": "def min_coin_change(coins, amount):\n    if amount == 0:\n        return 0\n    if not coins:\n        return -1\n    \n    # dp[i] = minimum coins needed for amount i\n    dp = [float('inf')] * (amount + 1)\n    dp[0] = 0\n    \n    for i in range(1, amount + 1):\n        for coin in coins:\n            if coin <= i and dp[i - coin] != float('inf'):\n                dp[i] = min(dp[i], dp[i - coin] + 1)\n    \n    return dp[amount] if dp[amount] != float('inf') else -1",
+      "test_cases": [
+        {"input": [[1, 3, 4], 6], "expected": 2},
+        {"input": [[2], 3], "expected": -1},
+        {"input": [[1], 0], "expected": 0},
+        {"input": [[1, 2, 5], 11], "expected": 3},
+        {"input": [[], 1], "expected": -1},
+        {"input": [[1, 3, 4], 9], "expected": 3}
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Longest Increasing Subsequence",
+      "statement": "Given an integer array, find the length of the longest strictly increasing subsequence. A subsequence maintains relative order but elements don't need to be contiguous.\n\nExample: [10,9,2,5,3,7,101,18] should return 4 (subsequence [2,3,7,101] or [2,3,7,18])\n\nUse dynamic programming approach for O(n²) solution.",
+      "function_signature": "def longest_increasing_subsequence(nums):",
+      "categories": ["optimization_problems", "dynamic_programming", "array_manipulation"],
+      "python_constructs": ["dynamic_programming", "nested_loops", "list_operations", "max_function"],
+      "hints": [
+        "Use dp[i] to store length of LIS ending at index i",
+        "For each position i, check all previous positions j where nums[j] < nums[i]",
+        "dp[i] = max(dp[j] + 1) for all valid j < i"
+      ],
+      "solution": "def longest_increasing_subsequence(nums):\n    if not nums:\n        return 0\n    \n    n = len(nums)\n    # dp[i] = length of LIS ending at index i\n    dp = [1] * n\n    \n    for i in range(1, n):\n        for j in range(i):\n            if nums[j] < nums[i]:\n                dp[i] = max(dp[i], dp[j] + 1)\n    \n    return max(dp)",
+      "test_cases": [
+        {"input": [[10, 9, 2, 5, 3, 7, 101, 18]], "expected": 4},
+        {"input": [[0, 1, 0, 3, 2, 3]], "expected": 4},
+        {"input": [[7, 7, 7, 7, 7, 7, 7]], "expected": 1},
+        {"input": [[1, 3, 6, 7, 9, 4, 10, 5, 6]], "expected": 6},
+        {"input": [[]], "expected": 0},
+        {"input": [[1]], "expected": 1}
+      ]
+    },
+    {
+      "id": 7,
+      "title": "Maximum Profit Stock Trading",
+      "statement": "You are given an array of stock prices where prices[i] is the price on day i. You can complete at most k transactions (buy-sell pairs). Find the maximum profit you can achieve. You must sell before buying again.\n\nInput: k (max transactions), prices (list of daily prices)\n\nExample: k=2, prices=[2,4,1] should return 2 (buy at 2, sell at 4).",
+      "function_signature": "def max_profit_k_transactions(k, prices):",
+      "categories": ["optimization_problems", "dynamic_programming", "array_manipulation"],
+      "python_constructs": ["dynamic_programming", "2d_array", "max_function", "optimization"],
+      "hints": [
+        "Use 2D DP: buy[i][j] = max profit after at most i transactions with stock in hand on day j",
+        "sell[i][j] = max profit after at most i transactions with no stock on day j",
+        "Optimize space if k is large relative to number of days"
+      ],
+      "solution": "def max_profit_k_transactions(k, prices):\n    if not prices or k == 0:\n        return 0\n    \n    n = len(prices)\n    \n    # If k is large enough, we can do as many transactions as we want\n    if k >= n // 2:\n        profit = 0\n        for i in range(1, n):\n            if prices[i] > prices[i-1]:\n                profit += prices[i] - prices[i-1]\n        return profit\n    \n    # buy[i] = max profit after at most i transactions with stock in hand\n    # sell[i] = max profit after at most i transactions with no stock\n    buy = [-prices[0]] * (k + 1)\n    sell = [0] * (k + 1)\n    \n    for i in range(1, n):\n        for j in range(k, 0, -1):\n            sell[j] = max(sell[j], buy[j] + prices[i])\n            buy[j] = max(buy[j], sell[j-1] - prices[i])\n    \n    return sell[k]",
+      "test_cases": [
+        {"input": [2, [2, 4, 1]], "expected": 2},
+        {"input": [2, [3, 2, 6, 5, 0, 3]], "expected": 7},
+        {"input": [1, [1, 2, 3, 4, 5]], "expected": 4},
+        {"input": [0, [1, 2, 3, 4, 5]], "expected": 0},
+        {"input": [2, [1]], "expected": 0},
+        {"input": [3, [2, 1, 2, 0, 1]], "expected": 2}
+      ]
+    },
+    {
+      "id": 8,
+      "title": "Task Scheduling Optimization",
+      "statement": "Given n tasks with execution times and m machines, distribute tasks to minimize the maximum completion time (makespan). Each machine can process one task at a time. Return the minimum possible maximum completion time.\n\nInput: tasks (list of execution times), machines (number of machines)\n\nExample: tasks=[3,1,4,1,5], machines=3 should return optimal assignment.",
+      "function_signature": "def minimize_makespan(tasks, machines):",
+      "categories": ["optimization_problems", "greedy_algorithms", "scheduling"],
+      "python_constructs": ["greedy_approach", "heap", "sorting", "min_function"],
+      "hints": [
+        "Use a greedy approach: always assign the next task to the machine with minimum current load",
+        "Use a min-heap to efficiently track machine loads",
+        "Sort tasks in descending order for better load balancing"
+      ],
+      "solution": "def minimize_makespan(tasks, machines):\n    if not tasks or machines == 0:\n        return 0\n    if machines >= len(tasks):\n        return max(tasks)\n    \n    import heapq\n    \n    # Sort tasks in descending order for better balancing\n    tasks_sorted = sorted(tasks, reverse=True)\n    \n    # Min-heap to track machine loads\n    machine_loads = [0] * machines\n    heapq.heapify(machine_loads)\n    \n    for task_time in tasks_sorted:\n        # Get machine with minimum load\n        min_load = heapq.heappop(machine_loads)\n        # Assign task to this machine\n        heapq.heappush(machine_loads, min_load + task_time)\n    \n    # Return maximum load (makespan)\n    return max(machine_loads)",
+      "test_cases": [
+        {"input": [[3, 1, 4, 1, 5], 3], "expected": 5},
+        {"input": [[1, 2, 3, 4, 5], 2], "expected": 8},
+        {"input": [[10, 10, 10, 10], 4], "expected": 10},
+        {"input": [[1, 1, 1, 1, 1], 1], "expected": 5},
+        {"input": [[], 3], "expected": 0},
+        {"input": [[5, 5, 4, 4, 4, 4, 4, 3, 3, 3], 4], "expected": 11}
+      ]
+    },
+    {
+      "id": 9,
+      "title": "Resource Allocation Optimization",
+      "statement": "You have a budget B and n projects, each requiring certain resources and providing returns. Each project can be funded at different levels (0%, 25%, 50%, 75%, 100%) with proportional returns but fixed setup costs. Maximize total return within budget.\n\nInput: budget, projects list of [setup_cost, max_investment, max_return]\n\nReturn maximum achievable return.",
+      "function_signature": "def optimize_resource_allocation(budget, projects):",
+      "categories": ["optimization_problems", "dynamic_programming", "mathematical_algorithms"],
+      "python_constructs": ["dynamic_programming", "nested_loops", "max_function", "list_comprehension"],
+      "hints": [
+        "For each project, calculate returns at different funding levels: 0%, 25%, 50%, 75%, 100%",
+        "Use dynamic programming treating each funding level as a separate item",
+        "Consider setup costs that must be paid regardless of funding level"
+      ],
+      "solution": "def optimize_resource_allocation(budget, projects):\n    if budget <= 0 or not projects:\n        return 0\n    \n    # Use memoization for efficiency\n    memo = {}\n    \n    def solve_memo(project_idx, remaining_budget):\n        if (project_idx, remaining_budget) in memo:\n            return memo[(project_idx, remaining_budget)]\n        \n        if project_idx >= len(projects):\n            return 0\n        \n        setup_cost, max_investment, max_return = projects[project_idx]\n        \n        # Option 1: Skip this project\n        max_return_value = solve_memo(project_idx + 1, remaining_budget)\n        \n        # Options 2-5: Fund at different levels\n        funding_levels = [0.25, 0.5, 0.75, 1.0]\n        \n        for level in funding_levels:\n            total_cost = setup_cost + int(max_investment * level)\n            return_value = int(max_return * level)\n            \n            if total_cost <= remaining_budget:\n                current_return = return_value + solve_memo(project_idx + 1, remaining_budget - total_cost)\n                max_return_value = max(max_return_value, current_return)\n        \n        memo[(project_idx, remaining_budget)] = max_return_value\n        return max_return_value\n    \n    return solve_memo(0, budget)",
+      "test_cases": [
+        {"input": [100, [[20, 50, 60], [30, 40, 80], [10, 30, 40]]], "expected": 100},
+        {"input": [50, [[10, 20, 30], [15, 25, 40]]], "expected": 40},
+        {"input": [0, [[10, 20, 30]]], "expected": 0},
+        {"input": [200, []], "expected": 0},
+        {"input": [75, [[25, 30, 50], [20, 25, 40], [15, 20, 30]]], "expected": 62},
+        {"input": [30, [[40, 50, 100]]], "expected": 0}
+      ]
+    },
+    {
+      "id": 10,
+      "title": "Optimal Binary Search Tree",
+      "statement": "Given n keys with their search frequencies, construct a binary search tree that minimizes the expected search cost. The cost of accessing a key is its depth in the tree × its frequency. Return the minimum possible total search cost.\n\nInput: keys (sorted list), frequencies (corresponding search frequencies)\n\nExample: keys=[10,12], frequencies=[34,50] optimal cost depends on tree structure.",
+      "function_signature": "def optimal_bst_cost(keys, frequencies):",
+      "categories": ["optimization_problems", "dynamic_programming", "binary_tree"],
+      "python_constructs": ["dynamic_programming", "3d_array", "nested_loops", "min_function", "mathematical_algorithms"],
+      "hints": [
+        "Use dynamic programming with dp[i][j] representing minimum cost for keys from i to j",
+        "For each subrange, try each key as root and calculate cost recursively",
+        "Cost = frequency_sum + cost_of_left_subtree + cost_of_right_subtree"
+      ],
+      "solution": "def optimal_bst_cost(keys, frequencies):\n    if not keys or not frequencies:\n        return 0\n    \n    n = len(keys)\n    if n != len(frequencies):\n        return 0\n    \n    # dp[i][j] = minimum cost for keys from index i to j\n    dp = [[0] * n for _ in range(n)]\n    \n    # freq_sum[i][j] = sum of frequencies from index i to j\n    freq_sum = [[0] * n for _ in range(n)]\n    \n    # Fill frequency sum table\n    for i in range(n):\n        freq_sum[i][i] = frequencies[i]\n        for j in range(i + 1, n):\n            freq_sum[i][j] = freq_sum[i][j-1] + frequencies[j]\n    \n    # Fill dp table\n    # Length 1: single keys\n    for i in range(n):\n        dp[i][i] = frequencies[i]\n    \n    # Length 2 to n\n    for length in range(2, n + 1):\n        for i in range(n - length + 1):\n            j = i + length - 1\n            dp[i][j] = float('inf')\n            \n            # Try each key as root\n            for r in range(i, j + 1):\n                cost = freq_sum[i][j]\n                \n                if r > i:\n                    cost += dp[i][r-1]\n                if r < j:\n                    cost += dp[r+1][j]\n                \n                dp[i][j] = min(dp[i][j], cost)\n    \n    return dp[0][n-1]",
+      "test_cases": [
+        {"input": [[10, 12], [34, 50]], "expected": 118},
+        {"input": [[10, 12, 20], [34, 8, 50]], "expected": 142},
+        {"input": [[1], [1]], "expected": 1},
+        {"input": [[1, 2, 3, 4], [4, 2, 6, 3]], "expected": 26},
+        {"input": [[], []], "expected": 0},
+        {"input": [[5, 6], [17, 25]], "expected": 59}
+      ]
+    }
+  ]
+}

@@ -1,0 +1,226 @@
+{
+  "problems": [
+    {
+      "id": 1,
+      "title": "Valid Parentheses Checker",
+      "statement": "Given a string containing only the characters '(', ')', '{', '}', '[' and ']', determine if the input string is valid. An input string is valid if: 1) Open brackets must be closed by the same type of brackets. 2) Open brackets must be closed in the correct order. 3) Every close bracket has a corresponding open bracket of the same type. Examples: '()' -> True, '()[]{}' -> True, '([)]' -> False, '(((' -> False",
+      "function_signature": "def is_valid_parentheses(s):",
+      "categories": ["data_structure_fundamentals", "string_processing", "stack_operations"],
+      "python_constructs": ["stack", "dictionary", "for_loop", "if_statements", "string_iteration"],
+      "hints": [
+        "Use a stack data structure to keep track of opening brackets",
+        "Create a mapping dictionary for bracket pairs: '(': ')', '[': ']', '{': '}'",
+        "When you encounter a closing bracket, check if it matches the most recent opening bracket"
+      ],
+      "solution": "def is_valid_parentheses(s):\n    stack = []\n    mapping = {'(': ')', '[': ']', '{': '}'}\n    \n    for char in s:\n        if char in mapping:  # Opening bracket\n            stack.append(char)\n        else:  # Closing bracket\n            if not stack or mapping[stack.pop()] != char:\n                return False\n    \n    return len(stack) == 0",
+      "test_cases": [
+        {"input": ["()"], "expected": true},
+        {"input": ["()[]{}"], "expected": true},
+        {"input": ["([)]"], "expected": false},
+        {"input": ["((("], "expected": false},
+        {"input": [""], "expected": true},
+        {"input": [")"], "expected": false},
+        {"input": ["((()))"], "expected": true}
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Stack-Based Expression Evaluator",
+      "statement": "Implement a function that evaluates a mathematical expression given in Reverse Polish Notation (RPN). In RPN, operators follow their operands. For example, '3 4 +' means 3 + 4 = 7. Valid operators are +, -, *, /. Division should truncate toward zero. Examples: ['2', '1', '+', '3', '*'] -> 9, ['4', '13', '5', '/', '+'] -> 6, ['10', '6', '9', '3', '+', '-11', '*', '/', '*', '17', '+', '5', '+'] -> 22",
+      "function_signature": "def evaluate_rpn(tokens):",
+      "categories": ["data_structure_fundamentals", "mathematical_algorithms", "stack_operations"],
+      "python_constructs": ["stack", "list", "for_loop", "if_statements", "type_conversion", "arithmetic_operations"],
+      "hints": [
+        "Use a stack to store operands as you process the tokens",
+        "When you encounter an operator, pop two operands from the stack, apply the operation, and push the result back",
+        "For division, use int(a/b) to truncate toward zero for both positive and negative results"
+      ],
+      "solution": "def evaluate_rpn(tokens):\n    stack = []\n    operators = {'+', '-', '*', '/'}\n    \n    for token in tokens:\n        if token in operators:\n            b = stack.pop()\n            a = stack.pop()\n            \n            if token == '+':\n                result = a + b\n            elif token == '-':\n                result = a - b\n            elif token == '*':\n                result = a * b\n            else:  # token == '/'\n                result = int(a / b)  # Truncate toward zero\n            \n            stack.append(result)\n        else:\n            stack.append(int(token))\n    \n    return stack[0]",
+      "test_cases": [
+        {"input": [["2", "1", "+", "3", "*"]], "expected": 9},
+        {"input": [["4", "13", "5", "/", "+"]], "expected": 6},
+        {"input": [["10", "6", "9", "3", "+", "-11", "*", "/", "*", "17", "+", "5", "+"]], "expected": 22},
+        {"input": [["18"]], "expected": 18},
+        {"input": [["3", "4", "+"]], "expected": 7},
+        {"input": [["15", "7", "1", "1", "+", "/", "*"]], "expected": 105}
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Queue-Based Task Processor",
+      "statement": "Implement a task processing system using a queue. Tasks arrive with priorities (1-5, where 1 is highest). Process tasks in FIFO order within each priority level. Return the order in which tasks are processed. Each task is represented as [task_id, priority]. Example: [[1, 2], [2, 1], [3, 2], [4, 1]] should return [2, 4, 1, 3] (priority 1 tasks first, then priority 2, maintaining FIFO within each priority)",
+      "function_signature": "def process_tasks(tasks):",
+      "categories": ["data_structure_fundamentals", "queue_operations", "logic_and_conditional"],
+      "python_constructs": ["queue", "dictionary", "list", "for_loop", "sorting", "list_comprehension"],
+      "hints": [
+        "Create separate queues for each priority level (1-5)",
+        "Distribute tasks into appropriate priority queues while maintaining order",
+        "Process queues in priority order (1 first, then 2, etc.) and extract task IDs"
+      ],
+      "solution": "def process_tasks(tasks):\n    from collections import deque\n    \n    # Create queues for each priority level\n    priority_queues = {i: deque() for i in range(1, 6)}\n    \n    # Distribute tasks into priority queues\n    for task_id, priority in tasks:\n        priority_queues[priority].append(task_id)\n    \n    result = []\n    # Process queues in priority order (1 = highest priority)\n    for priority in range(1, 6):\n        while priority_queues[priority]:\n            result.append(priority_queues[priority].popleft())\n    \n    return result",
+      "test_cases": [
+        {"input": [[[1, 2], [2, 1], [3, 2], [4, 1]]], "expected": [2, 4, 1, 3]},
+        {"input": [[[1, 3], [2, 1], [3, 3], [4, 2], [5, 1]]], "expected": [2, 5, 4, 1, 3]},
+        {"input": [[[1, 1]]], "expected": [1]},
+        {"input": [[[1, 5], [2, 4], [3, 3], [4, 2], [5, 1]]], "expected": [5, 4, 3, 2, 1]},
+        {"input": [[]], "expected": []}
+      ]
+    },
+    {
+      "id": 4,
+      "title": "Binary Tree Level Order Traversal",
+      "statement": "Given the root of a binary tree, return the level order traversal of its nodes' values (i.e., from left to right, level by level). The tree is represented as a list where None represents a missing node. For example, [3, 9, 20, None, None, 15, 7] represents a tree with root 3, left child 9, right child 20, and 20 has children 15 and 7. Return [[3], [9, 20], [15, 7]].",
+      "function_signature": "def level_order_traversal(tree_list):",
+      "categories": ["data_structure_fundamentals", "binary_tree", "queue_operations"],
+      "python_constructs": ["queue", "list", "while_loop", "if_statements", "class_definition"],
+      "hints": [
+        "Use a queue to process nodes level by level",
+        "First convert the list representation to actual tree nodes",
+        "Process all nodes at the current level before moving to the next level"
+      ],
+      "solution": "def level_order_traversal(tree_list):\n    if not tree_list or tree_list[0] is None:\n        return []\n    \n    from collections import deque\n    \n    class TreeNode:\n        def __init__(self, val=0):\n            self.val = val\n            self.left = None\n            self.right = None\n    \n    # Build tree from list\n    root = TreeNode(tree_list[0])\n    queue = deque([root])\n    i = 1\n    \n    while queue and i < len(tree_list):\n        node = queue.popleft()\n        \n        if i < len(tree_list) and tree_list[i] is not None:\n            node.left = TreeNode(tree_list[i])\n            queue.append(node.left)\n        i += 1\n        \n        if i < len(tree_list) and tree_list[i] is not None:\n            node.right = TreeNode(tree_list[i])\n            queue.append(node.right)\n        i += 1\n    \n    # Level order traversal\n    result = []\n    queue = deque([root])\n    \n    while queue:\n        level_size = len(queue)\n        level_values = []\n        \n        for _ in range(level_size):\n            node = queue.popleft()\n            level_values.append(node.val)\n            \n            if node.left:\n                queue.append(node.left)\n            if node.right:\n                queue.append(node.right)\n        \n        result.append(level_values)\n    \n    return result",
+      "test_cases": [
+        {"input": [[3, 9, 20, null, null, 15, 7]], "expected": [[3], [9, 20], [15, 7]]},
+        {"input": [[1]], "expected": [[1]]},
+        {"input": [[]], "expected": []},
+        {"input": [[1, 2, 3, 4, 5, 6, 7]], "expected": [[1], [2, 3], [4, 5, 6, 7]]},
+        {"input": [[1, 2, null, 3, null, 4, null]], "expected": [[1], [2], [3], [4]]}
+      ]
+    },
+    {
+      "id": 5,
+      "title": "Hash Table Implementation",
+      "statement": "Implement a basic hash table with the following operations: put(key, value), get(key), and remove(key). Use separate chaining for collision resolution. The hash table should handle string keys and integer values. Return -1 for get() if key doesn't exist, and return True/False for successful put/remove operations. Initialize with a capacity of 16 buckets.",
+      "function_signature": "class HashTable:",
+      "categories": ["data_structure_fundamentals", "hash_table", "object_oriented_programming"],
+      "python_constructs": ["class", "list", "dictionary", "hash_function", "modulo_operation", "list_operations"],
+      "hints": [
+        "Use a list of lists to represent buckets for separate chaining",
+        "Implement a simple hash function using Python's built-in hash() and modulo",
+        "Store key-value pairs as tuples or small lists within each bucket"
+      ],
+      "solution": "class HashTable:\n    def __init__(self, capacity=16):\n        self.capacity = capacity\n        self.buckets = [[] for _ in range(capacity)]\n    \n    def _hash(self, key):\n        return hash(key) % self.capacity\n    \n    def put(self, key, value):\n        bucket_index = self._hash(key)\n        bucket = self.buckets[bucket_index]\n        \n        # Check if key already exists\n        for i, (k, v) in enumerate(bucket):\n            if k == key:\n                bucket[i] = (key, value)  # Update existing\n                return True\n        \n        # Add new key-value pair\n        bucket.append((key, value))\n        return True\n    \n    def get(self, key):\n        bucket_index = self._hash(key)\n        bucket = self.buckets[bucket_index]\n        \n        for k, v in bucket:\n            if k == key:\n                return v\n        \n        return -1  # Key not found\n    \n    def remove(self, key):\n        bucket_index = self._hash(key)\n        bucket = self.buckets[bucket_index]\n        \n        for i, (k, v) in enumerate(bucket):\n            if k == key:\n                bucket.pop(i)\n                return True\n        \n        return False  # Key not found",
+      "test_cases": [
+        {"input": ["put", "key1", 10], "expected": true},
+        {"input": ["get", "key1"], "expected": 10},
+        {"input": ["put", "key2", 20], "expected": true},
+        {"input": ["get", "key2"], "expected": 20},
+        {"input": ["remove", "key1"], "expected": true},
+        {"input": ["get", "key1"], "expected": -1},
+        {"input": ["remove", "nonexistent"], "expected": false}
+      ]
+    },
+    {
+      "id": 6,
+      "title": "Linked List Reversal",
+      "statement": "Given a singly linked list represented as a list of values, reverse the linked list and return the reversed list. Implement this by creating actual linked list nodes and performing the reversal operation. For example, [1, 2, 3, 4, 5] should become [5, 4, 3, 2, 1]. Handle edge cases like empty lists and single-node lists.",
+      "function_signature": "def reverse_linked_list(values):",
+      "categories": ["data_structure_fundamentals", "linked_list", "pointer_manipulation"],
+      "python_constructs": ["class", "while_loop", "pointer_operations", "list_to_linkedlist_conversion"],
+      "hints": [
+        "Create a ListNode class to represent individual nodes",
+        "Use three pointers: previous, current, and next to reverse the links",
+        "Convert the input list to a linked list, reverse it, then convert back to a list"
+      ],
+      "solution": "def reverse_linked_list(values):\n    if not values:\n        return []\n    \n    class ListNode:\n        def __init__(self, val=0, next=None):\n            self.val = val\n            self.next = next\n    \n    # Create linked list from values\n    head = ListNode(values[0])\n    current = head\n    for val in values[1:]:\n        current.next = ListNode(val)\n        current = current.next\n    \n    # Reverse the linked list\n    prev = None\n    current = head\n    \n    while current:\n        next_node = current.next\n        current.next = prev\n        prev = current\n        current = next_node\n    \n    # Convert back to list\n    result = []\n    current = prev  # prev is now the new head\n    while current:\n        result.append(current.val)\n        current = current.next\n    \n    return result",
+      "test_cases": [
+        {"input": [[1, 2, 3, 4, 5]], "expected": [5, 4, 3, 2, 1]},
+        {"input": [[1, 2]], "expected": [2, 1]},
+        {"input": [[1]], "expected": [1]},
+        {"input": [[]], "expected": []},
+        {"input": [[1, 2, 3]], "expected": [3, 2, 1]},
+        {"input": [[10, 20, 30, 40]], "expected": [40, 30, 20, 10]}
+      ]
+    },
+    {
+      "id": 7,
+      "title": "Binary Search Tree Validation",
+      "statement": "Given a binary tree represented as a list (where None represents missing nodes), determine if it is a valid binary search tree (BST). A valid BST is defined as follows: 1) The left subtree of a node contains only nodes with keys less than the node's key. 2) The right subtree contains only nodes with keys greater than the node's key. 3) Both left and right subtrees are also BSTs. Example: [2, 1, 3] is valid, [5, 1, 4, None, None, 3, 6] is not valid.",
+      "function_signature": "def is_valid_bst(tree_list):",
+      "categories": ["data_structure_fundamentals", "binary_tree", "recursion"],
+      "python_constructs": ["class", "recursion", "helper_function", "boundary_checking"],
+      "hints": [
+        "Use a recursive helper function that maintains min and max bounds for each node",
+        "Each node must be within the valid range defined by its ancestors",
+        "Update the bounds as you traverse down the tree"
+      ],
+      "solution": "def is_valid_bst(tree_list):\n    if not tree_list or tree_list[0] is None:\n        return True\n    \n    class TreeNode:\n        def __init__(self, val=0):\n            self.val = val\n            self.left = None\n            self.right = None\n    \n    # Build tree from list\n    root = TreeNode(tree_list[0])\n    nodes = [root]\n    i = 1\n    \n    while i < len(tree_list):\n        node = nodes.pop(0)\n        \n        if i < len(tree_list) and tree_list[i] is not None:\n            node.left = TreeNode(tree_list[i])\n            nodes.append(node.left)\n        i += 1\n        \n        if i < len(tree_list) and tree_list[i] is not None:\n            node.right = TreeNode(tree_list[i])\n            nodes.append(node.right)\n        i += 1\n    \n    def validate(node, min_val, max_val):\n        if not node:\n            return True\n        \n        if node.val <= min_val or node.val >= max_val:\n            return False\n        \n        return (validate(node.left, min_val, node.val) and \n                validate(node.right, node.val, max_val))\n    \n    return validate(root, float('-inf'), float('inf'))",
+      "test_cases": [
+        {"input": [[2, 1, 3]], "expected": true},
+        {"input": [[5, 1, 4, null, null, 3, 6]], "expected": false},
+        {"input": [[1]], "expected": true},
+        {"input": [[]], "expected": true},
+        {"input": [[10, 5, 15, null, null, 6, 20]], "expected": false},
+        {"input": [[2, 1, 3, null, null, null, 4]], "expected": true}
+      ]
+    },
+    {
+      "id": 8,
+      "title": "Stack-Based Minimum Element Tracker",
+      "statement": "Design a stack that supports push, pop, top, and retrieving the minimum element in constant time. Implement the MinStack class with methods: push(val), pop(), top(), and get_min(). All operations should work in O(1) time complexity. Example: push(-2), push(0), push(-3), get_min() returns -3, pop(), top() returns 0, get_min() returns -2.",
+      "function_signature": "class MinStack:",
+      "categories": ["data_structure_fundamentals", "stack_operations", "optimization_problems"],
+      "python_constructs": ["class", "stack", "multiple_stacks", "constant_time_operations"],
+      "hints": [
+        "Use two stacks: one for regular elements and another for minimum values",
+        "The min stack should store the minimum element at each level",
+        "When pushing, compare with current minimum and update min stack accordingly"
+      ],
+      "solution": "class MinStack:\n    def __init__(self):\n        self.stack = []\n        self.min_stack = []\n    \n    def push(self, val):\n        self.stack.append(val)\n        \n        # Update min_stack\n        if not self.min_stack or val <= self.min_stack[-1]:\n            self.min_stack.append(val)\n    \n    def pop(self):\n        if not self.stack:\n            return None\n        \n        val = self.stack.pop()\n        \n        # Update min_stack if we're removing the minimum\n        if self.min_stack and val == self.min_stack[-1]:\n            self.min_stack.pop()\n        \n        return val\n    \n    def top(self):\n        if not self.stack:\n            return None\n        return self.stack[-1]\n    \n    def get_min(self):\n        if not self.min_stack:\n            return None\n        return self.min_stack[-1]",
+      "test_cases": [
+        {"input": ["push", -2], "expected": null},
+        {"input": ["push", 0], "expected": null},
+        {"input": ["push", -3], "expected": null},
+        {"input": ["get_min"], "expected": -3},
+        {"input": ["pop"], "expected": -3},
+        {"input": ["top"], "expected": 0},
+        {"input": ["get_min"], "expected": -2}
+      ]
+    },
+    {
+      "id": 9,
+      "title": "LRU Cache Implementation",
+      "statement": "Design and implement a data structure for Least Recently Used (LRU) cache. Support get(key) and put(key, value) operations. Get(key) returns the value if key exists, otherwise -1. Put(key, value) updates the value if key exists, otherwise adds the key-value pair. When cache reaches capacity, remove the least recently used item. Both operations should run in O(1) average time. Initialize with capacity parameter.",
+      "function_signature": "class LRUCache:",
+      "categories": ["data_structure_fundamentals", "hash_table", "linked_list", "optimization_problems"],
+      "python_constructs": ["class", "dictionary", "doubly_linked_list", "hash_map_combination"],
+      "hints": [
+        "Combine a hash map with a doubly linked list for O(1) operations",
+        "Hash map provides O(1) access, linked list maintains order of usage",
+        "Move accessed items to the front, remove from the back when capacity exceeded"
+      ],
+      "solution": "class LRUCache:\n    def __init__(self, capacity):\n        self.capacity = capacity\n        self.cache = {}\n        \n        # Create dummy head and tail nodes\n        self.head = self.Node(0, 0)\n        self.tail = self.Node(0, 0)\n        self.head.next = self.tail\n        self.tail.prev = self.head\n    \n    class Node:\n        def __init__(self, key, val):\n            self.key = key\n            self.val = val\n            self.prev = None\n            self.next = None\n    \n    def add_node(self, node):\n        # Add node right after head\n        node.prev = self.head\n        node.next = self.head.next\n        \n        self.head.next.prev = node\n        self.head.next = node\n    \n    def remove_node(self, node):\n        # Remove an existing node\n        prev_node = node.prev\n        next_node = node.next\n        \n        prev_node.next = next_node\n        next_node.prev = prev_node\n    \n    def move_to_head(self, node):\n        # Move node to head\n        self.remove_node(node)\n        self.add_node(node)\n    \n    def pop_tail(self):\n        # Remove last node\n        last_node = self.tail.prev\n        self.remove_node(last_node)\n        return last_node\n    \n    def get(self, key):\n        node = self.cache.get(key)\n        \n        if node:\n            # Move to head (mark as recently used)\n            self.move_to_head(node)\n            return node.val\n        \n        return -1\n    \n    def put(self, key, value):\n        node = self.cache.get(key)\n        \n        if node:\n            # Update value and move to head\n            node.val = value\n            self.move_to_head(node)\n        else:\n            new_node = self.Node(key, value)\n            \n            if len(self.cache) >= self.capacity:\n                # Remove least recently used\n                tail = self.pop_tail()\n                del self.cache[tail.key]\n            \n            # Add to cache and head\n            self.cache[key] = new_node\n            self.add_node(new_node)",
+      "test_cases": [
+        {"input": ["init", 2], "expected": null},
+        {"input": ["put", 1, 1], "expected": null},
+        {"input": ["put", 2, 2], "expected": null},
+        {"input": ["get", 1], "expected": 1},
+        {"input": ["put", 3, 3], "expected": null},
+        {"input": ["get", 2], "expected": -1},
+        {"input": ["get", 3], "expected": 3}
+      ]
+    },
+    {
+      "id": 10,
+      "title": "Binary Tree Height Calculator",
+      "statement": "Given a binary tree represented as a list (where None represents missing nodes), calculate and return the maximum height (depth) of the tree. The height of a tree is the number of edges on the longest path from root to leaf. An empty tree has height -1, a single node has height 0. Example: [3, 9, 20, None, None, 15, 7] has height 2.",
+      "function_signature": "def calculate_tree_height(tree_list):",
+      "categories": ["data_structure_fundamentals", "binary_tree", "recursion"],
+      "python_constructs": ["class", "recursion", "max_function", "tree_traversal"],
+      "hints": [
+        "Use recursion to calculate height of left and right subtrees",
+        "The height of a node is 1 + max(left_height, right_height)",
+        "Base case: empty node has height -1"
+      ],
+      "solution": "def calculate_tree_height(tree_list):\n    if not tree_list or tree_list[0] is None:\n        return -1\n    \n    class TreeNode:\n        def __init__(self, val=0):\n            self.val = val\n            self.left = None\n            self.right = None\n    \n    # Build tree from list\n    root = TreeNode(tree_list[0])\n    nodes = [root]\n    i = 1\n    \n    while i < len(tree_list) and nodes:\n        node = nodes.pop(0)\n        \n        if i < len(tree_list) and tree_list[i] is not None:\n            node.left = TreeNode(tree_list[i])\n            nodes.append(node.left)\n        i += 1\n        \n        if i < len(tree_list) and tree_list[i] is not None:\n            node.right = TreeNode(tree_list[i])\n            nodes.append(node.right)\n        i += 1\n    \n    def get_height(node):\n        if not node:\n            return -1\n        \n        left_height = get_height(node.left)\n        right_height = get_height(node.right)\n        \n        return 1 + max(left_height, right_height)\n    \n    return get_height(root)",
+      "test_cases": [
+        {"input": [[3, 9, 20, null, null, 15, 7]], "expected": 2},
+        {"input": [[1, null, 2]], "expected": 1},
+        {"input": [[]], "expected": -1},
+        {"input": [[1]], "expected": 0},
+        {"input": [[1, 2, 3, 4, 5, 6, 7]], "expected": 2},
+        {"input": [[1, 2, null, 3, null, 4, null]], "expected": 3}
+      ]
+    }
+  ]
+}
